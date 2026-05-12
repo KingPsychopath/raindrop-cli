@@ -142,9 +142,3 @@ Next likely additions:
 - apply/review files for cleanup plans
 - duplicate resolution helpers
 - optional MCP-powered organizer commands
-
-## Open Source Notes
-
-This repository intentionally has `README.md`, `LICENSE`, `CONTRIBUTING.md`, `SECURITY.md`, and `AGENTS.md`.
-
-It does not need `SKILLS.md` unless the repository becomes a packaged Codex skill. For a normal Go CLI, `AGENTS.md` is the better place to document how coding agents should work in the repo.
