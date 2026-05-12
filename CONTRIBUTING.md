@@ -26,6 +26,7 @@ export RAINDROP_TOKEN=your_token_here
 - Run `make check`.
 - Do not include personal exports, tokens, or generated binaries.
 - Keep bulk destructive workflows explicit with `--dry-run`, `--yes`, or ID-based inputs.
+- Update `CHANGELOG.md` for user-visible changes.
 
 ## CLI Design
 
@@ -44,3 +45,5 @@ git push origin v0.1.0
 ```
 
 The release workflow builds Linux, macOS, and Windows archives for amd64 and arm64.
+
+Release builds inject `rdrop version` metadata with linker flags.

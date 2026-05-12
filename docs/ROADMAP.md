@@ -16,6 +16,10 @@ The project should stay small, scriptable, dependency-light, and safe for large 
 - GitHub Actions CI.
 - Tagged releases with Linux, macOS, and Windows binaries for amd64 and arm64.
 - SHA-256 checksums for release artifacts.
+- Changelog for human-readable release history.
+- Release build metadata in `rdrop version`.
+- Code of conduct.
+- Regeneratable terminal demo SVG.
 
 ## Near-Term Ideas
 
@@ -23,7 +27,7 @@ These are useful next steps, but they have no expected timing.
 
 - Improve `rdrop help` with grouped command sections.
 - Add `--format tsv|json` consistently where it makes sense.
-- Add clearer install snippets for macOS, Linux, and Windows release archives.
+- Add more install snippets for package managers if packaging expands.
 - Add a `rdrop config paths` or `rdrop config doctor` command for auth/debugging.
 - Add examples for common Raindrop search syntax.
 - Add command-specific docs under `docs/commands/` if the README gets too large.

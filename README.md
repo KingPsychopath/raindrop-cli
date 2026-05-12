@@ -26,6 +26,30 @@ Download a prebuilt binary from [GitHub Releases](https://github.com/KingPsychop
 
 In Go release names, macOS builds are often labeled `darwin`: `darwin_amd64` is Intel Mac, and `darwin_arm64` is Apple Silicon Mac.
 
+Install a Linux or macOS archive:
+
+```bash
+curl -LO https://github.com/KingPsychopath/raindrop-cli/releases/download/v0.1.0/rdrop_0.1.0_linux_amd64.tar.gz
+tar -xzf rdrop_0.1.0_linux_amd64.tar.gz
+sudo install -m 0755 rdrop_0.1.0_linux_amd64/rdrop /usr/local/bin/rdrop
+rdrop version
+```
+
+Install a Windows archive from PowerShell:
+
+```powershell
+Invoke-WebRequest https://github.com/KingPsychopath/raindrop-cli/releases/download/v0.1.0/rdrop_0.1.0_windows_amd64.zip -OutFile rdrop.zip
+Expand-Archive .\rdrop.zip -DestinationPath .
+.\rdrop_0.1.0_windows_amd64\rdrop.exe version
+```
+
+Verify checksums:
+
+```bash
+curl -LO https://github.com/KingPsychopath/raindrop-cli/releases/download/v0.1.0/checksums.txt
+shasum -a 256 -c checksums.txt --ignore-missing
+```
+
 Or install from source with Go 1.22 or newer:
 
 ```bash
@@ -252,10 +276,17 @@ make build    build ./bin/rdrop
 make test     run tests
 make vet      run go vet
 make check    format, tidy, vet, test, and build
+make assets   regenerate README/demo assets
 make clean    remove build artifacts
 ```
 
 The project intentionally prefers the Go standard library. Add dependencies only when they clearly improve maintainability.
+
+The terminal demo image is generated from [scripts/render-terminal-demo.go](scripts/render-terminal-demo.go):
+
+```bash
+make assets
+```
 
 ## Releases
 
@@ -275,6 +306,8 @@ GitHub Actions builds release archives for:
 Each release includes `checksums.txt`.
 
 The release workflow cross-compiles from GitHub Actions. That is a normal fit for a small Go CLI. The macOS binaries are not currently signed or notarized.
+
+Release builds inject version metadata so `rdrop version` reports the release version, commit, and build date.
 
 ## License
 

@@ -39,6 +39,19 @@ func TestCompletionDoesNotRequireToken(t *testing.T) {
 	}
 }
 
+func TestVersionStringIncludesBuildMetadata(t *testing.T) {
+	oldVersion, oldCommit, oldDate := version, commit, date
+	version, commit, date = "1.2.3", "abc123", "2026-05-12T20:00:00Z"
+	defer func() {
+		version, commit, date = oldVersion, oldCommit, oldDate
+	}()
+
+	want := "1.2.3 commit:abc123 date:2026-05-12T20:00:00Z"
+	if got := versionString(); got != want {
+		t.Fatalf("versionString() = %q, want %q", got, want)
+	}
+}
+
 func TestParseFlagsKeepsFlagValueThatLooksLikeFlag(t *testing.T) {
 	fs := flag.NewFlagSet("list", flag.ContinueOnError)
 	sort := fs.String("sort", "", "sort")

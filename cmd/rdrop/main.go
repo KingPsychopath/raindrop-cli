@@ -14,7 +14,11 @@ import (
 	"github.com/KingPsychopath/raindrop-cli/internal/raindrop"
 )
 
-const version = "0.1.0"
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+)
 
 type app struct {
 	out  *os.File
@@ -44,7 +48,7 @@ func run(ctx context.Context, args []string) error {
 		return nil
 	}
 	if args[0] == "version" || args[0] == "--version" {
-		fmt.Fprintln(a.out, version)
+		fmt.Fprintln(a.out, versionString())
 		return nil
 	}
 	if args[0] == "completion" {
@@ -124,6 +128,10 @@ func run(ctx context.Context, args []string) error {
 	default:
 		return fmt.Errorf("unknown command %q", args[0])
 	}
+}
+
+func versionString() string {
+	return fmt.Sprintf("%s commit:%s date:%s", version, commit, date)
 }
 
 func (a *app) usage() {
