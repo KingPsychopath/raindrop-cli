@@ -20,6 +20,8 @@ The project should stay small, scriptable, dependency-light, and safe for large 
 - Release build metadata in `rdrop version`.
 - Code of conduct.
 - Regeneratable terminal demo SVG.
+- Dependabot for GitHub Actions and Go module updates.
+- Homebrew formula template for a future tap.
 
 ## Near-Term Ideas
 
@@ -48,7 +50,7 @@ These items should remain conservative and reviewable.
 These are packaging improvements to consider over time.
 
 - Use friendlier artifact names such as `macos` while keeping Go's internal `darwin` build target.
-- Add Homebrew formula support if there is demand.
+- Publish a Homebrew tap if there is demand.
 - Add Scoop or Winget support for Windows if there is demand.
 - Add Debian/RPM packages only if the extra maintenance is justified.
 - Consider signed macOS binaries if distribution friction becomes a real problem.

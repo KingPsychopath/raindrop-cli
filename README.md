@@ -217,7 +217,7 @@ rdrop backup download <backup-id> --format csv > backup.csv
 rdrop raw GET user/stats
 ```
 
-For endpoint coverage, see [docs/API_COVERAGE.md](docs/API_COVERAGE.md). For cleanup guidance, see [docs/ORGANIZING.md](docs/ORGANIZING.md). For future ideas with no expected timing, see [docs/ROADMAP.md](docs/ROADMAP.md).
+For endpoint coverage, see [docs/API_COVERAGE.md](docs/API_COVERAGE.md). For cleanup guidance, see [docs/ORGANIZING.md](docs/ORGANIZING.md). For packaging notes, see [docs/PACKAGING.md](docs/PACKAGING.md). For future ideas with no expected timing, see [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Output Contract
 

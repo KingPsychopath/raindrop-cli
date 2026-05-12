@@ -12,6 +12,8 @@ This project uses semantic version tags for releases. Dates are in UTC.
 - Build metadata injection for `rdrop version`.
 - Install and checksum verification examples in the README.
 - Code of conduct.
+- Dependabot configuration.
+- Homebrew formula template and packaging notes.
 
 ### Changed
 
