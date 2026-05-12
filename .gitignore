@@ -1,0 +1,13 @@
+.DS_Store
+/bin/
+/dist/
+/tmp/
+*.test
+*.out
+.env
+.env.*
+!.env.example
+*.csv
+*.html
+*.jsonl
+*.log
