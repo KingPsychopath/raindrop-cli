@@ -24,6 +24,8 @@ It is built for people and scripts: tab-separated output by default, JSON when y
 
 Download a prebuilt binary from [GitHub Releases](https://github.com/KingPsychopath/raindrop-cli/releases). Release archives include Linux, macOS, and Windows builds for amd64 and arm64, plus SHA-256 checksums.
 
+In Go release names, macOS builds are often labeled `darwin`: `darwin_amd64` is Intel Mac, and `darwin_arm64` is Apple Silicon Mac.
+
 Or install from source with Go 1.22 or newer:
 
 ```bash
@@ -191,7 +193,7 @@ rdrop backup download <backup-id> --format csv > backup.csv
 rdrop raw GET user/stats
 ```
 
-For endpoint coverage, see [docs/API_COVERAGE.md](docs/API_COVERAGE.md). For cleanup guidance, see [docs/ORGANIZING.md](docs/ORGANIZING.md).
+For endpoint coverage, see [docs/API_COVERAGE.md](docs/API_COVERAGE.md). For cleanup guidance, see [docs/ORGANIZING.md](docs/ORGANIZING.md). For future ideas with no expected timing, see [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Output Contract
 
@@ -266,11 +268,13 @@ git push origin v0.1.0
 
 GitHub Actions builds release archives for:
 
-- macOS amd64 and arm64
+- macOS amd64 and arm64, using Go's `darwin` build target
 - Linux amd64 and arm64
 - Windows amd64 and arm64
 
 Each release includes `checksums.txt`.
+
+The release workflow cross-compiles from GitHub Actions. That is a normal fit for a small Go CLI. The macOS binaries are not currently signed or notarized.
 
 ## License
 

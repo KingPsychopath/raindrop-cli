@@ -38,7 +38,11 @@ jobs:
 
           for platform in "${platforms[@]}"; do
             IFS=/ read -r goos goarch <<< "${platform}"
-            name="rdrop_${version}_${goos}_${goarch}"
+            artifact_os="${goos}"
+            if [ "${goos}" = "darwin" ]; then
+              artifact_os="macos"
+            fi
+            name="rdrop_${version}_${artifact_os}_${goarch}"
             binary="rdrop"
 
             if [ "${goos}" = "windows" ]; then
