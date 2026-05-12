@@ -1,10 +1,25 @@
 # raindrop-cli
 
+[![CI](https://github.com/KingPsychopath/raindrop-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/KingPsychopath/raindrop-cli/actions/workflows/ci.yml)
+[![Release](https://github.com/KingPsychopath/raindrop-cli/actions/workflows/release.yml/badge.svg)](https://github.com/KingPsychopath/raindrop-cli/actions/workflows/release.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Go Report Card](https://goreportcard.com/badge/github.com/KingPsychopath/raindrop-cli)](https://goreportcard.com/report/github.com/KingPsychopath/raindrop-cli)
+
 `rdrop` is a Go CLI for managing large Raindrop.io libraries.
 
 The goal is an agent-friendly, open-source tool for bookmarks, notes, tags, collections, highlights, duplicates, broken links, and cleanup workflows at thousands or tens of thousands of saved items.
 
 The CLI is REST-first because Raindrop's REST API exposes broad command parity today. Raindrop's MCP endpoint is useful as a learning and future intelligence layer, but the command line should remain easy to install, script, audit, and package on every platform.
+
+## Install
+
+Download a prebuilt binary from [Releases](https://github.com/KingPsychopath/raindrop-cli/releases), or install from source:
+
+```bash
+go install github.com/KingPsychopath/raindrop-cli/cmd/rdrop@latest
+```
+
+Release archives include Linux, macOS, and Windows builds for amd64 and arm64, plus SHA-256 checksums.
 
 ## Requirements
 
@@ -50,6 +65,13 @@ To install into your Go bin path:
 ```bash
 make install
 rdrop doctor
+```
+
+To publish a release, tag a clean commit and push the tag:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
 ```
 
 ## Commands
