@@ -56,6 +56,13 @@ Or install from source with Go 1.22 or newer:
 go install github.com/KingPsychopath/raindrop-cli/cmd/rdrop@latest
 ```
 
+Install with Homebrew:
+
+```bash
+brew tap KingPsychopath/tap
+brew install rdrop
+```
+
 To build from a local checkout:
 
 ```bash

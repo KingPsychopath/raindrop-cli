@@ -24,31 +24,32 @@ The project has no third-party Go dependencies today, but this keeps the setup r
 
 ## Homebrew
 
-The repo includes a formula template at [`packaging/homebrew/rdrop.rb`](../packaging/homebrew/rdrop.rb).
-
-This is not the same as being published in Homebrew core or a tap. To make Homebrew install work for users, create a tap repository such as:
-
-```text
-KingPsychopath/homebrew-tap
-```
-
-Then copy the formula to:
-
-```text
-Formula/rdrop.rb
-```
-
-Users could then install with:
+The project has a Homebrew tap:
 
 ```bash
 brew tap KingPsychopath/tap
 brew install rdrop
 ```
 
-Before publishing a new tap formula release, update the `url` and `sha256` for the tagged source archive:
+Tap repository:
+
+```text
+https://github.com/KingPsychopath/homebrew-tap
+```
+
+The source repo keeps a copy of the formula at [`packaging/homebrew/rdrop.rb`](../packaging/homebrew/rdrop.rb). The live formula is maintained in the tap at `Formula/rdrop.rb`.
+
+For a new release:
+
+1. Update the tap formula `url` to the new tag.
+2. Update the tap formula `sha256`.
+3. Test the formula locally.
+4. Commit and push the tap update.
+
+Get the source archive checksum with:
 
 ```bash
 curl -L https://github.com/KingPsychopath/raindrop-cli/archive/refs/tags/v0.1.0.tar.gz | shasum -a 256
 ```
 
-The formula intentionally builds from source with Go. That keeps it simple and avoids maintaining per-platform bottle metadata in this repository.
+The formula intentionally builds from source with Go. That keeps it simple and avoids maintaining bottle metadata for now.
