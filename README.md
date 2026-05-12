@@ -9,6 +9,8 @@
 
 It is built for people and scripts: tab-separated output by default, JSON when you ask for it, exports written directly to stdout, and explicit guardrails around bulk destructive actions.
 
+![Terminal demo showing rdrop commands](docs/assets/terminal-demo.svg)
+
 ## Highlights
 
 - Dependency-light Go binary with no runtime services.
