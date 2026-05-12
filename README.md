@@ -5,162 +5,271 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/KingPsychopath/raindrop-cli)](https://goreportcard.com/report/github.com/KingPsychopath/raindrop-cli)
 
-`rdrop` is a Go CLI for managing large Raindrop.io libraries.
+`rdrop` is a small Go CLI for managing large [Raindrop.io](https://raindrop.io) bookmark libraries from the terminal.
 
-The goal is an agent-friendly, open-source tool for bookmarks, notes, tags, collections, highlights, duplicates, broken links, and cleanup workflows at thousands or tens of thousands of saved items.
+It is built for people and scripts: tab-separated output by default, JSON when you ask for it, exports written directly to stdout, and explicit guardrails around bulk destructive actions.
 
-The CLI is REST-first because Raindrop's REST API exposes broad command parity today. Raindrop's MCP endpoint is useful as a learning and future intelligence layer, but the command line should remain easy to install, script, audit, and package on every platform.
+## Highlights
+
+- Dependency-light Go binary with no runtime services.
+- First-class commands for bookmarks, collections, tags, highlights, backups, sharing, imports, exports, filters, and cleanup reports.
+- Pipeline-friendly output for shell tools like `cut`, `sort`, `awk`, and `jq`.
+- `--json` on commands where structured output is useful.
+- `rdrop raw` escape hatch for documented REST endpoints that do not yet have a first-class command.
+- Tag and cleanup reports designed for cautious large-library organization.
 
 ## Install
 
-Download a prebuilt binary from [Releases](https://github.com/KingPsychopath/raindrop-cli/releases), or install from source:
+Download a prebuilt binary from [GitHub Releases](https://github.com/KingPsychopath/raindrop-cli/releases). Release archives include Linux, macOS, and Windows builds for amd64 and arm64, plus SHA-256 checksums.
+
+Or install from source with Go 1.22 or newer:
 
 ```bash
 go install github.com/KingPsychopath/raindrop-cli/cmd/rdrop@latest
 ```
 
-Release archives include Linux, macOS, and Windows builds for amd64 and arm64, plus SHA-256 checksums.
+To build from a local checkout:
 
-## Requirements
-
-- Go 1.22 or newer
-- A Raindrop.io API token
-
-Raindrop's REST API base URL is:
-
-```text
-https://api.raindrop.io/rest/v1
+```bash
+make build
+./bin/rdrop version
 ```
 
-## Auth
+## Authentication
 
-Set `RAINDROP_TOKEN` in your shell, or put it in:
+Create a Raindrop.io API token, then set it in your shell:
+
+```bash
+export RAINDROP_TOKEN=your_token_here
+rdrop doctor
+```
+
+`rdrop doctor` verifies that the token works and prints the authenticated account.
+
+You can also store the token in:
 
 ```text
 ~/.config/openclaw/gateway.env
 ```
 
-Example:
+with:
 
 ```text
 RAINDROP_TOKEN=your_token_here
 ```
 
-Optional overrides:
+Optional API overrides:
+
+```bash
+export RAINDROP_API_BASE_URL=https://api.raindrop.io/rest/v1
+export RAINDROP_MCP_ENDPOINT=https://api.raindrop.io/rest/v2/ai/mcp
+```
+
+## Quick Start
+
+List collections:
+
+```bash
+rdrop collections
+```
+
+Search bookmarks:
+
+```bash
+rdrop search "postgres"
+```
+
+Add a bookmark:
+
+```bash
+rdrop add https://example.com --title Example --tags docs,example --parse
+```
+
+Export to CSV:
+
+```bash
+rdrop export --format csv > raindrop.csv
+```
+
+Use JSON with `jq`:
+
+```bash
+rdrop list --search "postgres" --json | jq '.items[].link'
+```
+
+Install shell completion:
+
+```bash
+rdrop completion bash > ~/.local/share/bash-completion/completions/rdrop
+mkdir -p ~/.zfunc && rdrop completion zsh > ~/.zfunc/_rdrop
+rdrop completion fish > ~/.config/fish/completions/rdrop.fish
+```
+
+For zsh, add `fpath=(~/.zfunc $fpath)` to your shell config if `~/.zfunc` is not already in `fpath`.
+
+## Everyday Workflows
+
+Find things that need attention:
+
+```bash
+rdrop filters
+rdrop untagged
+rdrop duplicates
+rdrop broken
+```
+
+Start a safe cleanup pass:
+
+```bash
+rdrop cleanup report --json > cleanup-report.json
+rdrop cleanup report
+```
+
+Inspect candidates before mutating anything:
+
+```bash
+rdrop untagged --json | jq '.items[] | {id: ._id, title, link}'
+rdrop duplicates --json | jq '.items[] | {id: ._id, title, link}'
+rdrop broken --json | jq '.items[] | {id: ._id, title, link}'
+```
+
+Apply explicit changes:
+
+```bash
+rdrop tag merge "Machine Learning,machine learning" machine-learning
+rdrop batch tag --ids 101,102 --tags needs-review
+rdrop batch move --ids 101,102 --to 98765
+```
+
+Plan a bulk delete before applying it:
+
+```bash
+rdrop batch delete --search "notag:true" --dry-run
+rdrop batch delete --search "notag:true" --yes
+```
+
+## Command Reference
+
+Run:
+
+```bash
+rdrop help
+rdrop help cleanup
+rdrop help batch
+```
+
+Common commands:
 
 ```text
-RAINDROP_API_BASE_URL=https://api.raindrop.io/rest/v1
-RAINDROP_MCP_ENDPOINT=https://api.raindrop.io/rest/v2/ai/mcp
-```
-
-## Build
-
-```bash
-make build
-./bin/rdrop doctor
-```
-
-To install into your Go bin path:
-
-```bash
-make install
 rdrop doctor
+rdrop me [--json]
+rdrop stats [--json]
+rdrop collections [--children] [--json]
+rdrop collection create [--parent id] <title>
+rdrop collection update <id> '{"title":"New name"}'
+rdrop collection merge --to 123 --ids 456,789
+rdrop collection empty-trash --yes
+rdrop tags [--collection id] [--json]
+rdrop tag rename old-name new-name
+rdrop tag merge old-name,old-name-2 new-name
+rdrop list [--collection id] [--search query] [--page n] [--per-page n] [--json]
+rdrop search "javascript"
+rdrop get [--json] <id>
+rdrop add [--title text] [--tags a,b] [--collection id] [--parse] <url>
+rdrop update <id> '{"important":true,"tags":["go","docs"]}'
+rdrop delete <id>
+rdrop batch tag --ids 1,2 --tags go,docs
+rdrop batch move --ids 1,2 --to 98765
+rdrop batch delete --ids 1,2 --dry-run
+rdrop export --format csv|html|zip > bookmarks.csv
+rdrop import file bookmarks.html
+rdrop highlights [--collection id]
+rdrop backups
+rdrop backup download <backup-id> --format csv > backup.csv
+rdrop raw GET user/stats
 ```
 
-To publish a release, tag a clean commit and push the tag:
+For endpoint coverage, see [docs/API_COVERAGE.md](docs/API_COVERAGE.md). For cleanup guidance, see [docs/ORGANIZING.md](docs/ORGANIZING.md).
+
+## Output Contract
+
+Human-readable list output is tab-separated and intentionally compact:
+
+```bash
+rdrop search "postgres" | cut -f1,3
+rdrop tags | sort -k2 -nr | head
+```
+
+Structured output is pretty-printed JSON:
+
+```bash
+rdrop collections --json
+rdrop cleanup report --json
+```
+
+Commands that export file formats write bytes directly to stdout:
+
+```bash
+rdrop export --format html > raindrop.html
+rdrop backup download 659d42a35ffbb2eb5ae1cb86 --format csv > backup.csv
+```
+
+## Safety Model
+
+`rdrop` keeps destructive operations explicit:
+
+- `cleanup report` never mutates your library.
+- Bulk tag and move require explicit `--ids`.
+- Bulk delete requires either `--dry-run` or `--yes`.
+- Emptying Trash requires `--yes`.
+- Exports and backups write to stdout so you choose where bytes go.
+
+Prefer this sequence for large organizing work:
+
+```bash
+rdrop cleanup report --json
+rdrop untagged --json
+rdrop batch tag --ids 1,2,3 --tags needs-review
+rdrop cleanup report --json
+```
+
+## Development
+
+```bash
+git clone https://github.com/KingPsychopath/raindrop-cli.git
+cd raindrop-cli
+make check
+```
+
+Useful targets:
+
+```text
+make build    build ./bin/rdrop
+make test     run tests
+make vet      run go vet
+make check    format, tidy, vet, test, and build
+make clean    remove build artifacts
+```
+
+The project intentionally prefers the Go standard library. Add dependencies only when they clearly improve maintainability.
+
+## Releases
+
+Releases are created by pushing a semantic version tag:
 
 ```bash
 git tag v0.1.0
 git push origin v0.1.0
 ```
 
-## Commands
+GitHub Actions builds release archives for:
 
-```bash
-rdrop help
-rdrop help cleanup
-rdrop doctor
-rdrop me
-rdrop user update '{"fullName":"New Name"}'
-rdrop stats
-rdrop collections
-rdrop collections --children
-rdrop collection create "Reading"
-rdrop collection merge --to 123 --ids 456,789
-rdrop collection clean
-rdrop covers pokemon
-rdrop tags
-rdrop tag rename old-name new-name
-rdrop filters
-rdrop list --per-page 50
-rdrop search "javascript"
-rdrop untagged
-rdrop duplicates
-rdrop broken
-rdrop get 123456
-rdrop add --title Example --tags docs,example --parse https://example.com
-rdrop update 123456 '{"important":true,"tags":["go","docs"]}'
-rdrop delete 123456
-rdrop highlights --collection 123
-rdrop highlight add 123456 --text "Useful quote" --color yellow
-rdrop export --format csv > raindrop.csv
-rdrop import exists https://example.com,https://example.org
-rdrop import file bookmarks.html
-rdrop upload file --collection 123 document.pdf
-rdrop cover raindrop 123456 cover.png
-rdrop cover collection 123 cover.png
-rdrop sharing list 123
-rdrop backups
-rdrop backup download 659d42a35ffbb2eb5ae1cb86 --format csv > backup.csv
-rdrop cleanup report
-rdrop cleanup report --json | jq '.tagPlans[]'
-rdrop batch tag --ids 1,2,3 --tags needs-review
-rdrop batch move --ids 1,2,3 --to 98765
-rdrop raw GET user/stats
-```
+- macOS amd64 and arm64
+- Linux amd64 and arm64
+- Windows amd64 and arm64
 
-The default list outputs are tab-separated so they work with common tools:
+Each release includes `checksums.txt`.
 
-```bash
-rdrop search "postgres" | cut -f1,3
-rdrop tags | sort -k2 -nr | head
-rdrop export --format html > raindrop.html
-```
+## License
 
-Add `--json` where structured output is useful for agents or `jq`:
-
-```bash
-rdrop list --search "postgres" --json | jq '.items[].link'
-```
-
-## Development Principles
-
-- Prefer MCP tools for library intelligence and semantic cleanup.
-- Keep destructive operations explicit.
-- Add `--dry-run` before shipping bulk organizing commands.
-- Keep command output useful for both humans and agents.
-- Avoid storing tokens in the repository.
-- Keep REST parity through first-class commands where the API is stable and through `rdrop raw` everywhere else.
-
-## Project Layout
-
-```text
-cmd/rdrop              CLI entrypoint and command parsing
-internal/config        Environment and token loading
-internal/raindrop      Raindrop REST client and API methods
-internal/cli           Formatting and parsing helpers
-docs/API_COVERAGE.md   Raindrop endpoint coverage and known gaps
-AGENTS.md              Guidance for AI coding agents and contributors
-```
-
-## Current Scope
-
-See [`docs/API_COVERAGE.md`](docs/API_COVERAGE.md) for the command parity matrix.
-
-For cleanup and agent workflows, see [`docs/ORGANIZING.md`](docs/ORGANIZING.md).
-
-Next likely additions:
-
-- apply/review files for cleanup plans
-- duplicate resolution helpers
-- optional MCP-powered organizer commands
+MIT. See [LICENSE](LICENSE).

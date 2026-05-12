@@ -41,7 +41,7 @@ Usage:
   rdrop collection expand true|false
   rdrop collection merge --to id --ids id,id
   rdrop collection clean
-  rdrop collection empty-trash
+  rdrop collection empty-trash --yes
 
 Manages collections. Deleting a collection moves contained raindrops to Trash.
 `,
@@ -148,10 +148,16 @@ Moves one raindrop to Trash. Deleting from Trash can remove permanently.
 Usage:
   rdrop batch tag --ids 1,2 --tags go,docs [--collection id]
   rdrop batch move --ids 1,2 --to collectionID [--collection id]
-  rdrop batch delete --ids 1,2 [--collection id]
-  rdrop batch delete --search "notag:true" [--collection id]
+  rdrop batch delete --ids 1,2 [--collection id] --dry-run|--yes
+  rdrop batch delete --search "notag:true" [--collection id] --dry-run|--yes
 
-Bulk operations. Prefer targeted IDs or a carefully tested search.
+Bulk operations. Tag and move require explicit IDs. Delete requires --dry-run or --yes.
+`,
+	"completion": `
+Usage:
+  rdrop completion bash|zsh|fish
+
+Prints shell completion scripts to stdout. This command does not require RAINDROP_TOKEN.
 `,
 	"highlights": `
 Usage:

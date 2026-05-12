@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"flag"
+	"os"
 	"strings"
 	"testing"
 
@@ -26,6 +28,17 @@ func TestParseFlagsAllowsFlagsAfterPositionals(t *testing.T) {
 	}
 }
 
+func TestCompletionDoesNotRequireToken(t *testing.T) {
+	t.Setenv("RAINDROP_TOKEN", "")
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+
+	err := run(context.Background(), []string{"completion", "bash"})
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestParseFlagsKeepsFlagValueThatLooksLikeFlag(t *testing.T) {
 	fs := flag.NewFlagSet("list", flag.ContinueOnError)
 	sort := fs.String("sort", "", "sort")
@@ -44,7 +57,7 @@ func TestHelpTopicsCoverTopLevelCommands(t *testing.T) {
 		"doctor", "me", "user", "stats", "collections", "collection", "covers", "cover",
 		"export", "import", "upload", "tags", "tag", "filters", "cleanup", "list",
 		"search", "get", "add", "update", "delete", "batch", "highlights", "highlight",
-		"cache", "sharing", "backups", "backup", "suggest", "raw",
+		"cache", "sharing", "backups", "backup", "suggest", "completion", "raw",
 	}
 	for _, command := range commands {
 		if helpTopics[command] == "" {
@@ -76,5 +89,31 @@ func TestShellQuote(t *testing.T) {
 		if got := shellQuote(input); got != want {
 			t.Fatalf("shellQuote(%q) = %q, want %q", input, got, want)
 		}
+	}
+}
+
+func TestBatchDeleteRequiresDryRunOrYes(t *testing.T) {
+	err := (&app{out: os.Stdout, err: os.Stderr}).batch(context.Background(), []string{"delete", "--ids", "1,2"})
+	if err == nil || !strings.Contains(err.Error(), "--dry-run or --yes") {
+		t.Fatalf("err = %v", err)
+	}
+}
+
+func TestBatchTagAndMoveRequireIDs(t *testing.T) {
+	err := (&app{out: os.Stdout, err: os.Stderr}).batch(context.Background(), []string{"tag", "--tags", "go"})
+	if err == nil || !strings.Contains(err.Error(), "batch tag") {
+		t.Fatalf("tag err = %v", err)
+	}
+	err = (&app{out: os.Stdout, err: os.Stderr}).batch(context.Background(), []string{"move", "--to", "123"})
+	if err == nil || !strings.Contains(err.Error(), "batch move") {
+		t.Fatalf("move err = %v", err)
+	}
+}
+
+func TestBatchDeleteApplyCommand(t *testing.T) {
+	got := batchDeleteApplyCommand(123, "notag:true", []int64{1, 2})
+	want := "rdrop batch delete --ids 1,2 --search notag:true --collection 123 --yes"
+	if got != want {
+		t.Fatalf("command = %q, want %q", got, want)
 	}
 }

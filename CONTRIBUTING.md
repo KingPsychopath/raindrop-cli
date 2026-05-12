@@ -25,6 +25,7 @@ export RAINDROP_TOKEN=your_token_here
 - Update `README.md` and `docs/API_COVERAGE.md` when adding a first-class command.
 - Run `make check`.
 - Do not include personal exports, tokens, or generated binaries.
+- Keep bulk destructive workflows explicit with `--dry-run`, `--yes`, or ID-based inputs.
 
 ## CLI Design
 
@@ -32,3 +33,14 @@ export RAINDROP_TOKEN=your_token_here
 - Machine output should use `--json`.
 - Commands that emit file formats, such as `export`, write the payload to stdout so users can redirect or pipe it.
 - Dangerous bulk operations should require targeted inputs such as `--ids`, `--search`, or a collection ID.
+
+## Releases
+
+Maintainers publish releases by pushing a semantic version tag:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+The release workflow builds Linux, macOS, and Windows archives for amd64 and arm64.
