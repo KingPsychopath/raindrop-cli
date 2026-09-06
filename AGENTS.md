@@ -13,7 +13,9 @@ Guidance for AI coding agents and human contributors working in this repository.
 - Keep destructive commands explicit. Bulk delete and cleanup workflows should grow `--dry-run` planning before becoming more automated.
 - Use `rdrop cleanup report --json` as the first step for organizing workflows. Do not mutate a user's library until a plan is visible and intentionally applied.
 - Do not commit tokens, exports, local `.env` files, or generated binaries.
-- Run `make check` before submitting changes.
+- For Go behavior changes, start with focused package tests; run `make check`
+  before submitting source changes. Prose-only edits need reference and diff
+  review, not application tests.
 
 ## Code Map
 
