@@ -20,6 +20,7 @@ func (a *app) agent(ctx context.Context, args []string) error {
 	base := fs.String("base-url", os.Getenv("RDROP_MODEL_BASE_URL"), "model API root")
 	protocol := fs.String("api", "responses", "responses or chat")
 	write := fs.Bool("allow-write", false, "authorize the model to apply writes")
+	official := fs.Bool("official", false, "include official hosted Raindrop read tools")
 	steps := fs.Int("max-steps", 12, "maximum model requests")
 	calls := fs.Int("max-tool-calls", 32, "maximum tool calls")
 	tokens := fs.Int("max-output-tokens", 4096, "maximum output tokens per model request")
@@ -54,12 +55,18 @@ func (a *app) agent(ctx context.Context, args []string) error {
 		return err
 	}
 	engine := &toolEngine{api: a.api, write: *write}
+	ctx, cancel := context.WithTimeout(ctx, *timeout)
+	defer cancel()
+	if *official {
+		if err := engine.enableOfficial(ctx); err != nil {
+			return err
+		}
+		defer engine.official.session.Close()
+	}
 	tools := []ai.Tool{}
 	for _, tool := range engine.tools() {
 		tools = append(tools, ai.Tool{Name: tool.Name, Description: tool.Description, Schema: tool.InputSchema, Validate: func(input json.RawMessage) error { return validateToolInput(tool, input) }})
 	}
-	ctx, cancel := context.WithTimeout(ctx, *timeout)
-	defer cancel()
 	initial := engine.call(ctx, "raindrop_cleanup_report", json.RawMessage(`{}`))
 	if initial.IsError {
 		return fmt.Errorf("initial cleanup report failed: %s", initial.Content[0].(*mcp.TextContent).Text)

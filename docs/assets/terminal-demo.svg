@@ -1,23 +1,23 @@
 <svg width="960" height="460" viewBox="0 0 960 460" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">raindrop-cli terminal demo</title>
-  <desc id="desc">A terminal screenshot-style demo showing rdrop commands for checking authentication, listing tags, and creating a cleanup report.</desc>
+  <desc id="desc">A terminal screenshot-style demo showing rdrop commands for discovering MCP tools, browsing collection paths, and validating a reviewed plan.</desc>
   <rect width="960" height="460" rx="18" fill="#101820"/>
   <rect x="24" y="24" width="912" height="412" rx="14" fill="#0B1117" stroke="#26313D"/>
   <rect x="24" y="24" width="912" height="48" rx="14" fill="#17212B"/>
   <circle cx="52" cy="48" r="7" fill="#FF5F57"/>
   <circle cx="76" cy="48" r="7" fill="#FFBD2E"/>
   <circle cx="100" cy="48" r="7" fill="#28C840"/>
-  <text x="132" y="54" fill="#9FB0C3" font-family="Menlo, Consolas, monospace" font-size="15">rdrop - Raindrop.io from the terminal</text>
+  <text x="132" y="54" fill="#9FB0C3" font-family="Menlo, Consolas, monospace" font-size="15">rdrop - Shell commands, MCP tools and model workflows</text>
   <text x="48" y="112" fill="#5EEAD4" font-family="Menlo, Consolas, monospace" font-size="18">$</text>
-  <text x="72" y="112" fill="#E6EDF3" font-family="Menlo, Consolas, monospace" font-size="18">rdrop doctor</text>
-  <text x="72" y="146" fill="#A7F3D0" font-family="Menlo, Consolas, monospace" font-size="18">ok authenticated as Abel &lt;abel@example.com&gt; id:12345 pro:true</text>
+  <text x="72" y="112" fill="#E6EDF3" font-family="Menlo, Consolas, monospace" font-size="18">rdrop mcp tools | jq length</text>
+  <text x="72" y="146" fill="#A7F3D0" font-family="Menlo, Consolas, monospace" font-size="18">26 read-only tools; writes require --allow-write</text>
   <text x="48" y="198" fill="#5EEAD4" font-family="Menlo, Consolas, monospace" font-size="18">$</text>
-  <text x="72" y="198" fill="#E6EDF3" font-family="Menlo, Consolas, monospace" font-size="18">rdrop tags | sort -k2 -nr | head</text>
-  <text x="72" y="232" fill="#C9D1D9" font-family="Menlo, Consolas, monospace" font-size="18">postgres        184</text>
-  <text x="72" y="260" fill="#C9D1D9" font-family="Menlo, Consolas, monospace" font-size="18">go              126</text>
-  <text x="72" y="288" fill="#C9D1D9" font-family="Menlo, Consolas, monospace" font-size="18">systems         93</text>
+  <text x="72" y="198" fill="#E6EDF3" font-family="Menlo, Consolas, monospace" font-size="18">rdrop collections --tree</text>
+  <text x="72" y="232" fill="#C9D1D9" font-family="Menlo, Consolas, monospace" font-size="18">Reference / Engineering        184</text>
+  <text x="72" y="260" fill="#C9D1D9" font-family="Menlo, Consolas, monospace" font-size="18">Reading / Essays               126</text>
+  <text x="72" y="288" fill="#C9D1D9" font-family="Menlo, Consolas, monospace" font-size="18">Unsorted                        93</text>
   <text x="48" y="340" fill="#5EEAD4" font-family="Menlo, Consolas, monospace" font-size="18">$</text>
-  <text x="72" y="340" fill="#E6EDF3" font-family="Menlo, Consolas, monospace" font-size="18">rdrop cleanup report</text>
-  <text x="72" y="374" fill="#C9D1D9" font-family="Menlo, Consolas, monospace" font-size="18">broken: 12   duplicates: 48   untagged: 319   important: 77</text>
-  <text x="72" y="402" fill="#FDE68A" font-family="Menlo, Consolas, monospace" font-size="18">next: inspect, plan, then apply explicit commands</text>
+  <text x="72" y="340" fill="#E6EDF3" font-family="Menlo, Consolas, monospace" font-size="18">rdrop cleanup apply reviewed-plan.json --dry-run</text>
+  <text x="72" y="374" fill="#C9D1D9" font-family="Menlo, Consolas, monospace" font-size="18">validated: account, digest and every bookmark snapshot</text>
+  <text x="72" y="402" fill="#FDE68A" font-family="Menlo, Consolas, monospace" font-size="18">next: review the exact plan, then explicitly apply</text>
 </svg>

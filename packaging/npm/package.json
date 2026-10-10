@@ -1,8 +1,9 @@
 {
-  "name": "@kingpsychopath/raindrop-cli",
+  "name": "@machineyearn/raindrop-cli",
   "version": "0.0.0-development",
   "private": true,
   "description": "Raindrop CLI and MCP server, backed by a native Go binary",
+  "keywords": ["raindrop", "bookmarks", "mcp", "cli", "tagging", "local-ai"],
   "license": "MIT",
   "bin": { "rdrop": "launcher.cjs" },
   "engines": { "node": ">=22" },

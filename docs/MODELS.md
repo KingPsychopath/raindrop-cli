@@ -17,6 +17,7 @@ rdrop agent --base-url http://127.0.0.1:1234/v1 --api chat --model local-model -
 | `--api responses` | Default: Responses tools and function-call outputs; `store:false`; replays encrypted reasoning output |
 | `--api chat` | Chat Completions function tools and tool messages for compatible gateways |
 | `--allow-write` | Authorizes model-selected mutations; otherwise only reads and planning tools |
+| `--official` | Also imports Raindrop's hosted read tools; authenticated network discovery and upstream plan limits apply |
 | `--max-steps`, `--max-tool-calls` | Default 12 model requests and 32 total calls |
 | `--max-output-tokens` | Default 4096 per model request |
 | `--timeout` | Default 10 minutes overall; individual HTTP request limit 120 seconds |
@@ -26,7 +27,9 @@ The loop reads a cleanup report and bounded context first. It validates every to
 
 The caller chooses the right wire protocol and a model that supports it. Not every OpenAI-compatible service implements Responses, tool calls or reasoning replay. OpenAI's current tool-calling models may require Responses; consult the [official function-calling guide](https://developers.openai.com/api/docs/guides/function-calling). This client is a bounded synchronous loop, without streaming, persisted sessions or unattended scheduling.
 
-`--allow-write` is explicit authorization to expose account, sharing and destructive tools to the model. For a review-first workflow, leave it off, inspect `.plans`, and run `cleanup apply` yourself. A model-generated `confirm:true` is not evidence of a person approving that particular call.
+`--allow-write` is explicit authorization to expose account, sharing and destructive tools to the model. For a review-first workflow, leave it off and inspect `.plans`. Use `cleanup apply` for existing-bookmark plans, or `batch add --plan` for creation plans with `action:create`. A model-generated `confirm:true` is not evidence of a person approving that particular call.
+
+Cloudflare Workers AI can also host the conversational model. Put its API token in `RDROP_MODEL_API_KEY` and use `--base-url https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/v1 --api chat` with an actual tool-capable model. Its Responses endpoint currently supports GPT-OSS models; choose `--api responses` only for a supported model. See [Cloudflare's compatibility guide](https://developers.cloudflare.com/workers-ai/configuration/open-ai-compatibility/). Clef is a separate typed-decision model, not a conversational Responses model.
 
 ## Typed decision providers
 
@@ -36,13 +39,13 @@ The caller chooses the right wire protocol and a model that supports it. Not eve
 {"reference":"Technical documentation", "read-later":"Long-form reading"}
 ```
 
-The shared System One request is `{model,state,questions}`. Each bookmark gets a `choice` question keyed by its ID; criteria contain your category descriptions plus `needs_review`. HTTP providers receive `POST <base-url>/systemone`. Command providers receive the same JSON on stdin and must return exactly one JSON response on stdout:
+The shared System One request is `{model,state,questions}`. Each bookmark has its own request, containing only that bookmark's metadata and one `choice` question keyed by its ID; criteria contain your category descriptions plus `needs_review`. Generic HTTP providers receive `POST <base-url>/systemone`; the Cloudflare adapter uses its Workers AI model endpoint and unwraps its result envelope. Command providers receive the same JSON on stdin and must return exactly one JSON response on stdout:
 
 ```json
 {"model":"local-model","answers":{"101":{"type":"choice","choice":"reference","confidence":0.9,"probabilities":{"reference":0.85,"read-later":0.1,"needs_review":0.05},"abstention":false}}}
 ```
 
-Answers must cover every question exactly, use known labels, supply finite confidence and a full probability distribution between 0 and 1 summing to approximately 1 (tolerance 0.02). `needsReview` is true for abstention, `needs_review`, confidence below `--min-confidence` or chosen probability below `--min-probability`; both thresholds default to 0.8. Provider scores and calibration differ. Laya's `confidence` is its own score; the optional `x_jev_confidence` is not used by this client. Evaluate reviewed examples before trusting a threshold. Results never apply tags by themselves.
+Answers must cover every question exactly, use known labels, supply finite confidence and a full probability distribution between 0 and 1 summing to approximately 1 (tolerance 0.02). `needsReview` is true for abstention, `needs_review`, confidence below `--min-confidence` or chosen probability below `--min-probability`; both thresholds default to 0.8. Provider scores and calibration differ. Laya's `confidence` is its own score; the optional `x_jev_confidence` is not used by this client. Evaluate reviewed examples before trusting a threshold. Requests run sequentially, at most 25 per invocation. An error stops the invocation without applying anything; prefer a resident HTTP service over repeatedly loading a command adapter. Results never apply tags by themselves.
 
 ### Jev
 
@@ -53,10 +56,12 @@ The default provider is [TypeSafe System One](https://docs.typesafe.ai/introduct
 [Laya](https://github.com/NandhaKishorM/laya) provides a System One-compatible service. Install and manage its runtime separately, selecting the checkpoint and hardware appropriate to your data:
 
 ```sh
-python -m venv .venv
-. .venv/bin/activate
-python -m pip install 'laya[serve]'
-LAYA_HOST=127.0.0.1 LAYA_PORT=8000 LAYA_MODELS=english laya-serve
+uv venv --python 3.12 .venv-models
+uv pip install --python .venv-models/bin/python -r integrations/laya/requirements-live.txt
+HF_HOME="$PWD/.artifacts/hf" \
+LAYA_REVISION=7b928d828b7b0e022f929d9bd2e44165aa270148 \
+LAYA_HOST=127.0.0.1 LAYA_PORT=8000 LAYA_MODELS=english \
+.venv-models/bin/laya-serve
 ```
 
 In another shell:
@@ -70,13 +75,29 @@ rdrop classify --ids 101,102 --taxonomy taxonomy.json --json
 
 Check the chosen Laya version's serving options and port. Initial use can download checkpoints. For offline use, configure local checkpoints using Laya's [local setup guide](https://github.com/NandhaKishorM/laya/blob/main/LOCAL_SETUP.md). Upstream benchmark results do not establish accuracy or latency for your bookmark taxonomy.
 
+### Cloudflare Clef
+
+[Clef](https://developers.cloudflare.com/workers-ai/models/clef/) uses the System One decision contract on Workers AI. Use a Workers AI API token in the private environment and your account ID:
+
+```sh
+export RDROP_DECISION_PROVIDER=cloudflare
+export CLOUDFLARE_ACCOUNT_ID=YOUR_32_CHARACTER_ACCOUNT_ID
+# Set CLOUDFLARE_API_TOKEN through your private secret environment.
+export RDROP_DECISION_MODEL=clef-flash
+rdrop classify --ids 101,102 --taxonomy taxonomy.json --json
+```
+
+Supported selectors are `clef`, `clef-flash` and `clef-omni`; the default is `clef-flash`. The adapter posts to `/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/cloudflare/MODEL`, validates the Cloudflare success envelope, and feeds its answers into the same confidence/distribution checks. `RDROP_DECISION_API_KEY` overrides `CLOUDFLARE_API_TOKEN`; `RDROP_DECISION_BASE_URL` overrides the API root. It does not fall back to a TypeSafe key. The current classification input contains text/JSON metadata, not downloaded media.
+
+Cloudflare provides [open weights](https://developers.cloudflare.com/changelog/post/2026-10-01-clef-workers-ai/) as well. A local Clef runtime needs to expose the generic System One HTTP/command contract; weights alone do not provide a server. Local Clef deployment and live hosted Clef inference were not verified in this release. REST envelope, isolated state, malformed replies and path validation are covered by fixture tests.
+
 ### Local command adapter
 
 The supplied Python adapter calls `Router.predict` and normalizes typed answers. Install Laya in your own virtual environment, then point to that Python executable and the adapter's absolute path:
 
 ```sh
 export RDROP_DECISION_PROVIDER=command
-export RDROP_DECISION_COMMAND="$PWD/.venv/bin/python"
+export RDROP_DECISION_COMMAND="$PWD/.venv-models/bin/python"
 export RDROP_DECISION_ARGS='["/absolute/path/raindrop-cli/integrations/laya/classify.py"]'
 export RDROP_DECISION_MODEL=english
 rdrop classify --ids 101,102 --taxonomy taxonomy.json --json
@@ -93,3 +114,5 @@ Configure `RDROP_DECISION_BASE_URL`, `RDROP_DECISION_API_KEY` and `RDROP_DECISIO
 Direct models receive library counts, tag names, collection paths and selected bookmark metadata. Additional read tools, such as `get`, highlights and snapshot planning, can expose private content when the model calls them. Full apply plans returned to the model include private notes in their snapshots. Classification omits notes; MCP context keeps its raw snapshots local. Saved full contexts and plans contain private metadata and must be stored accordingly.
 
 Fixture tests verify transport, schema rejection, tool round trips, budgets, abstention and planning. They do not evaluate model quality or verify a live service/account. A useful evaluation set contains real reviewed tags/moves, ambiguous items that should abstain, existing spelling variants, long excerpts and held-out examples. Compare each provider's mistakes and coverage before changing thresholds or enabling writes.
+
+For exact tested installation commands, model revisions, real results and limits, see [live verification](VERIFICATION.md).

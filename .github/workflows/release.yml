@@ -35,6 +35,7 @@ jobs:
           version="${GITHUB_REF_NAME#v}"
           build_date="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           mkdir -p dist
+          node scripts/release-readme.mjs "${version}" dist/README.md
 
           platforms=(
             "darwin/amd64"
@@ -63,7 +64,7 @@ jobs:
               go build -trimpath \
                 -ldflags="-s -w -X main.version=${version} -X main.commit=${GITHUB_SHA} -X main.date=${build_date}" \
                 -o "dist/${name}/${binary}" ./cmd/rdrop
-            cp README.md LICENSE "dist/${name}/"
+            cp dist/README.md LICENSE "dist/${name}/"
 
             if [ "${goos}" = "windows" ]; then
               (cd dist && zip -qr "${name}.zip" "${name}")
@@ -79,6 +80,7 @@ jobs:
           node scripts/build-npm.mjs "${GITHUB_REF_NAME#v}"
           node scripts/pack-npm.mjs
           node scripts/smoke-npm.mjs
+          node scripts/pack-plugin.mjs "${GITHUB_REF_NAME#v}"
       - name: Checksums
         run: |
           cd dist

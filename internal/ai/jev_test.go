@@ -43,3 +43,45 @@ func TestJevTypedClassificationAndReviewThreshold(t *testing.T) {
 		}
 	}
 }
+
+func TestClassificationIsolatesEachBookmarkBeforeDecision(t *testing.T) {
+	calls := 0
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		calls++
+		var input struct {
+			State []struct {
+				ID    int64  `json:"id"`
+				Title string `json:"title"`
+			} `json:"state"`
+			Questions map[string]any `json:"questions"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+			t.Fatal(err)
+		}
+		if len(input.State) != 1 || len(input.Questions) != 1 {
+			t.Fatalf("shared bookmark state reached classifier: %+v", input)
+		}
+		if input.State[0].ID == 42 {
+			if input.State[0].Title != "API reference" || input.Questions["42"] == nil {
+				t.Fatal("wrong bookmark/question binding")
+			}
+			w.Write([]byte(`{"answers":{"42":{"type":"choice","choice":"docs","confidence":1,"probabilities":{"docs":1,"needs_review":0}}}}`))
+		} else {
+			if input.State[0].ID != 43 || input.State[0].Title != "Ambiguous" || input.Questions["43"] == nil {
+				t.Fatal("wrong bookmark/question binding")
+			}
+			w.Write([]byte(`{"answers":{"43":{"type":"choice","choice":"needs_review","confidence":1,"probabilities":{"docs":0,"needs_review":1}}}}`))
+		}
+	}))
+	defer server.Close()
+	client, _ := NewClient(server.URL, "")
+	items := []raindrop.Raindrop{{ID: 42, Title: "API reference"}, {ID: 43, Title: "Ambiguous"}}
+	result, err := Classify(context.Background(), client, "local", items, map[string]string{"docs": "Technical documentation"}, 0.8, 0.8)
+	if err != nil || calls != 2 || result.Results[0].NeedsReview || !result.Results[1].NeedsReview {
+		t.Fatalf("result=%+v calls=%d err=%v", result, calls, err)
+	}
+	items[1].ID = 42
+	if _, err := Classify(context.Background(), client, "local", items, map[string]string{"docs": "Docs"}, 0.8, 0.8); err == nil || calls != 2 {
+		t.Fatal("duplicate IDs must fail before contacting the provider")
+	}
+}

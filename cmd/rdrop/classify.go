@@ -23,7 +23,7 @@ type classifyInput struct {
 }
 
 func classifyTool() *mcp.Tool {
-	return &mcp.Tool{Name: "raindrop_classify", Description: "Classify 1..25 bookmarks into fixed caller-defined categories using the configured System One HTTP or local command provider (Jev, Laya, or a compatible adapter). Sends metadata to that provider; no private notes. Validates distributions and returns needsReview. Never mutates.", InputSchema: map[string]any{"type": "object", "properties": map[string]any{"ids": map[string]any{"type": "array", "items": map[string]any{"type": "integer", "minimum": 1}, "minItems": 1, "maxItems": 25, "uniqueItems": true}, "categories": map[string]any{"type": "object", "minProperties": 1, "maxProperties": 254, "additionalProperties": map[string]any{"type": "string", "minLength": 1}}, "minConfidence": map[string]any{"type": "number", "minimum": 0, "maximum": 1}, "minProbability": map[string]any{"type": "number", "minimum": 0, "maximum": 1}}, "required": []string{"ids", "categories"}, "additionalProperties": false}, Annotations: &mcp.ToolAnnotations{ReadOnlyHint: true, DestructiveHint: boolPointer(false)}}
+	return &mcp.Tool{Name: "raindrop_classify", Description: "Classify 1..25 bookmarks into fixed caller-defined categories using the configured System One HTTP or local command provider (Jev, Laya, Cloudflare Clef, or a compatible adapter). Sends metadata to that provider; no private notes. Validates distributions and returns needsReview. Never mutates.", InputSchema: map[string]any{"type": "object", "properties": map[string]any{"ids": map[string]any{"type": "array", "items": map[string]any{"type": "integer", "minimum": 1}, "minItems": 1, "maxItems": 25, "uniqueItems": true}, "categories": map[string]any{"type": "object", "minProperties": 1, "maxProperties": 254, "additionalProperties": map[string]any{"type": "string", "minLength": 1}}, "minConfidence": map[string]any{"type": "number", "minimum": 0, "maximum": 1}, "minProbability": map[string]any{"type": "number", "minimum": 0, "maximum": 1}}, "required": []string{"ids", "categories"}, "additionalProperties": false}, Annotations: &mcp.ToolAnnotations{ReadOnlyHint: true, DestructiveHint: boolPointer(false)}}
 }
 
 func (a *app) classifyItems(ctx context.Context, input classifyInput) (ai.ClassificationResult, error) {
@@ -133,8 +133,26 @@ func decisionProvider() (ai.Poster, string, error) {
 		}
 		return ai.CommandProvider{Path: path, Args: args}, model, nil
 	}
+	if provider == "cloudflare" {
+		base := os.Getenv("RDROP_DECISION_BASE_URL")
+		if base == "" {
+			base = "https://api.cloudflare.com/client/v4"
+		}
+		key := os.Getenv("RDROP_DECISION_API_KEY")
+		if key == "" {
+			key = os.Getenv("CLOUDFLARE_API_TOKEN")
+		}
+		if key == "" {
+			return nil, "", fmt.Errorf("set CLOUDFLARE_API_TOKEN or RDROP_DECISION_API_KEY for Workers AI")
+		}
+		if os.Getenv("RDROP_DECISION_MODEL") == "" {
+			model = "clef-flash"
+		}
+		client, err := ai.NewCloudflareProvider(base, key, os.Getenv("CLOUDFLARE_ACCOUNT_ID"), model)
+		return client, model, err
+	}
 	if provider != "systemone" {
-		return nil, "", fmt.Errorf("RDROP_DECISION_PROVIDER must be systemone or command")
+		return nil, "", fmt.Errorf("RDROP_DECISION_PROVIDER must be systemone, cloudflare or command")
 	}
 	base := os.Getenv("RDROP_DECISION_BASE_URL")
 	if base == "" {

@@ -18,7 +18,7 @@ _rdrop_completion() {
       return 0
       ;;
     mcp)
-      COMPREPLY=( $(compgen -W "serve tools" -- "$cur") ); return 0 ;;
+      COMPREPLY=( $(compgen -W "serve tools call" -- "$cur") ); return 0 ;;
     connect)
       COMPREPLY=( $(compgen -W "mcp acp raindrop executor" -- "$cur") ); return 0 ;;
     config)
@@ -36,7 +36,7 @@ _rdrop_completion() {
       return 0
       ;;
     batch)
-      COMPREPLY=( $(compgen -W "tag move delete" -- "$cur") )
+      COMPREPLY=( $(compgen -W "add tag move delete" -- "$cur") )
       return 0
       ;;
   esac
@@ -97,7 +97,7 @@ _describe 'command' commands
 const fishCompletion = `# fish completion for rdrop
 complete -c rdrop -f
 complete -c rdrop -n "__fish_use_subcommand" -a "mcp connect config context organize classify agent user covers cover upload filters highlights highlight cache sharing backups backup suggest version help"
-complete -c rdrop -n "__fish_seen_subcommand_from mcp" -a "serve tools"
+complete -c rdrop -n "__fish_seen_subcommand_from mcp" -a "serve tools call"
 complete -c rdrop -n "__fish_seen_subcommand_from connect" -a "mcp acp raindrop executor"
 complete -c rdrop -n "__fish_seen_subcommand_from cleanup" -a "report plan apply"
 complete -c rdrop -n "__fish_seen_subcommand_from organize" -a "plan"

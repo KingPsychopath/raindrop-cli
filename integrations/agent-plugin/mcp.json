@@ -1,0 +1,15 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "raindrop": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "--yes",
+        "@machineyearn/raindrop-cli@0.2.0",
+        "mcp",
+        "serve"
+      ]
+    }
+  }
+}

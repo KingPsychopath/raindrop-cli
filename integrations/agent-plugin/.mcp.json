@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "raindrop": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "--yes",
+        "@machineyearn/raindrop-cli@0.2.0",
+        "mcp",
+        "serve"
+      ]
+    }
+  }
+}

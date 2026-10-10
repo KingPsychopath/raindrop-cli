@@ -41,7 +41,7 @@ Output is the params object for `session/new`, after your client initializes a c
 rdrop connect raindrop
 ```
 
-Endpoint: `https://api.raindrop.io/rest/v2/ai/mcp`. The [official documentation](https://developer.raindrop.io/mcp/mcp) currently describes a Pro beta service using Streamable HTTP and OAuth 2.1 or bearer auth. Configure auth in the client; generated output omits credentials. Local `rdrop` MCP instead uses REST and does not require that remote MCP service; individual Pro-only REST features still require Pro.
+Endpoint: `https://api.raindrop.io/rest/v2/ai/mcp`. The [official setup guide](https://help.raindrop.io/integrations/mcp) describes Streamable HTTP with OAuth 2.1 or bearer auth; the free plan restricts text/semantic search. Configure auth in the client; generated output omits credentials. Local `rdrop` MCP uses REST by default, with optional documented hosted reads through `--official`. [Bridge and workflow comparison](OFFICIAL_MCP.md). Individual Pro-only REST features still require Pro.
 
 `RAINDROP_MCP_ENDPOINT` or `connect raindrop --url` overrides the config URL. It is not used by local `mcp serve` or the direct model loop.
 
@@ -49,16 +49,22 @@ Endpoint: `https://api.raindrop.io/rest/v2/ai/mcp`. The [official documentation]
 
 The source in [integrations/executor](../integrations/executor) is a portable app; its host calls Raindrop REST directly. It requires one Raindrop account whose API-key field is `token`. It offers cleanup counts, paged bookmarks, collection roots/children, tags, highlights, bookmark creation and tag append. It deliberately has a smaller surface than the local Go tools; bulk snapshots and context validation live in `rdrop`.
 
-The app uses `never()` for reads and `always()` for its two writes. The host requires approval bound to the exact tool and arguments; `confirm:true` alone cannot bypass it. Requests use a fixed API origin and manual redirect handling, rejecting 3xx responses. Appending tags preserves existing names, with the same concurrent-edit limitations as any read-then-write operation.
+The provider limits credential substitution to `api.raindrop.io`, in the declared bearer header, and checks the current-user endpoint to verify an account. The app uses `never()` for reads and `always()` for its two writes. The host requires approval bound to the exact tool and arguments; `confirm:true` alone cannot bypass it. Requests use a fixed API origin and manual redirect handling, rejecting 3xx responses. Appending tags preserves existing names, with the same concurrent-edit limitations as any read-then-write operation.
 
-The adapter is checked against `apps@0.0.1-beta.74`. Dependabot excludes `apps` because the target host controls that version; the stable package on npm is unrelated to this framework. Executor requires the **target host's exact framework version**, not `apps@latest`:
+The adapter is checked against `apps@0.0.1-beta.69`. Dependabot excludes `apps` because the target host controls that version; the stable package on npm is unrelated to this framework. Executor requires the **target host's exact framework version**, not `apps@latest`:
 
 ```sh
-executor apps framework
+npm install -g executor@2.0.0-beta.14 --include=optional
+# In a separate terminal, keep this running:
+EXECUTOR_DATA_DIR="$HOME/.local/share/rdrop-executor" \
+EXECUTOR_KEY_STORAGE=file executor serve
+
+# In the checkout, the wrapper loads this host's private API key without printing it.
+node scripts/executor-local.mjs apps framework
 npm ci --prefix integrations/executor
 npm --prefix integrations/executor run check
 npm --prefix integrations/executor test
-node scripts/prepare-executor.mjs 0.0.1-beta.74
+node scripts/prepare-executor.mjs 0.0.1-beta.69
 ```
 
 Proceed only if the host reports that exact version. A different version requires updating and verifying the adapter; the preparation script rejects a mismatch. Current [Executor authoring instructions](https://executor.sh/docs/author-an-app) explain the framework and provider account schema.
@@ -66,12 +72,12 @@ Proceed only if the host reports that exact version. A different version require
 Create the app on your chosen local host after inspecting the prepared files:
 
 ```sh
-executor apps create --name raindrop-cli --files dist/executor-app
-executor apps source --app YOUR_APP_ID
-executor apps deploy --app YOUR_APP_ID --commit EXACT_SOURCE_REVISION
+node scripts/executor-local.mjs apps create --name raindrop-cli --files dist/executor-app
+node scripts/executor-local.mjs apps source --app YOUR_APP_ID
+node scripts/executor-local.mjs apps deploy --app YOUR_APP_ID --commit EXACT_SOURCE_REVISION
 ```
 
-Use the real source revision returned by the host. Bind your account through Executor's account UI; use its hosted options only for an intentionally selected hosted destination. The app has not been deployed by this repository's test suite.
+Use the real source revision returned by the host. Bind your account through Executor's account UI; use its hosted options only for an intentionally selected hosted destination. The adapter was deployed to a local Executor host for the [live verification](VERIFICATION.md); CI uses contract fixtures. Hosted deployment requires selecting and authenticating that destination.
 
 For an agent to connect to Executor itself:
 
@@ -80,7 +86,7 @@ rdrop connect executor
 rdrop connect executor --url https://mcp.executor.sh/org/YOUR_ORG/mcp
 ```
 
-Local default: `http://127.0.0.1:4312/mcp`. Hosted connections use Executor's OAuth/PAT configuration in the client. Generating this config does not install, create, deploy or authenticate an Executor app. See [Executor MCP docs](https://executor.sh/docs/mcp).
+Local default: `http://127.0.0.1:4312/mcp`. A local MCP client needs the host's private API key in its bearer authentication settings; generating `connect executor` output does not supply it. `python3 scripts/executor-mcp.py` lists the running host's MCP tools without printing that key. Hosted connections use Executor's OAuth/PAT configuration in the client. Generating this config does not install, create, deploy or authenticate an Executor app. See [Executor MCP docs](https://executor.sh/docs/mcp).
 
 ## Other Raindrop MCP projects
 

@@ -3,7 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "scripts": { "check": "tsc --noEmit", "test": "node --test contract.test.mjs" },
-  "dependencies": { "apps": "0.0.1-beta.74" },
-  "devDependencies": { "typescript": "5.9.3" }
+  "scripts": {
+    "check": "tsc --noEmit",
+    "test": "node --test contract.test.mjs"
+  },
+  "dependencies": {
+    "apps": "0.0.1-beta.69"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
 }

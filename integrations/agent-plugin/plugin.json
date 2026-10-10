@@ -1,0 +1,28 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "raindrop",
+  "version": "0.2.0",
+  "description": "Find and organize your Raindrop library with reviewed plans.",
+  "author": {
+    "name": "Machineyearn"
+  },
+  "homepage": "https://github.com/KingPsychopath/raindrop-cli",
+  "repository": "https://github.com/KingPsychopath/raindrop-cli",
+  "license": "MIT",
+  "keywords": [
+    "raindrop",
+    "bookmarks",
+    "organization",
+    "mcp"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Raindrop",
+        "shortDescription": "Find links and organize your library with reviewed plans",
+        "developerName": "Machineyearn",
+        "category": "Productivity"
+      }
+    }
+  }
+}
