@@ -60,6 +60,7 @@ func toolCatalog() []toolSpec {
 		spec("import exists", "Check which URLs are already saved.", false, false, false, csv("urls", "", "strings", true)),
 		spec("sharing list", "Read collection collaborators.", false, false, false, num("collection", "", true)),
 		spec("backups", "List account backups.", false, false, false),
+		spec("backup create", "Create an account backup after explicit review.", true, false, false),
 		spec("add", "Create a bookmark; review the URL and destination.", true, false, true, str("url", "", true), str("title", "title", false), csv("tags", "tags", "strings", false), num("collection", "collection", false), str("note", "note", false), str("excerpt", "excerpt", false), boolean("parse", "parse")),
 		spec("update", "Update one bookmark with an explicit JSON object.", true, true, false, num("id", "", true), body()),
 		spec("delete", "Delete one bookmark. Items already in Trash may be permanently deleted.", true, true, false, num("id", "", true)),

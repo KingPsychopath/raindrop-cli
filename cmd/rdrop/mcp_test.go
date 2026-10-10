@@ -121,3 +121,28 @@ func TestApplyRejectsOversizedInputBeforeAnyAPIRequest(t *testing.T) {
 		t.Fatalf("oversized input reached apply: requests=%d error=%v", requests, err)
 	}
 }
+
+func TestBackupCreationRequiresWriteExposureAndExplicitIntent(t *testing.T) {
+	writes := 0
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "GET" {
+			writes++
+		}
+		if r.Method != "POST" || r.URL.Path != "/backups" {
+			t.Errorf("wrong backup API route: %s %s", r.Method, r.URL.Path)
+		}
+		w.Write([]byte(`{"result":true}`))
+	}))
+	defer server.Close()
+	engine := &toolEngine{api: raindrop.NewClient(server.URL, "fixture")}
+	if result := engine.call(context.Background(), "raindrop_backup_create", json.RawMessage(`{"confirm":true}`)); !result.IsError || writes != 0 {
+		t.Fatal("read-only backup write permitted")
+	}
+	engine.write = true
+	if result := engine.call(context.Background(), "raindrop_backup_create", json.RawMessage(`{}`)); !result.IsError || writes != 0 {
+		t.Fatal("backup write without intent permitted")
+	}
+	if result := engine.call(context.Background(), "raindrop_backup_create", json.RawMessage(`{"confirm":true}`)); result.IsError || writes != 1 {
+		t.Fatalf("reviewed backup call failed: %+v writes=%d", result, writes)
+	}
+}
