@@ -14,7 +14,7 @@ The Go version is declared in `go.mod`; CI uses that file. The release workflow 
 
 For a released archive, download it and the matching `checksums.txt` from the same [GitHub release](https://github.com/KingPsychopath/raindrop-cli/releases). On Linux run `sha256sum --check checksums.txt --ignore-missing`; on macOS compare `shasum -a 256 YOUR_ARCHIVE` to that archive's entry before extracting it. Do not reuse another release's checksums.
 
-The [Homebrew formula](../packaging/homebrew/rdrop.rb) and `KingPsychopath/tap` use a tagged source archive and its verified SHA-256 checksum. The `head` option tracks main. Update the source URL and checksum together after each release tag exists; source archive checksums differ from native release archive checksums.
+The [published Homebrew formula](https://github.com/KingPsychopath/homebrew-tap/blob/main/Formula/rdrop.rb), mirrored in [packaging/homebrew/rdrop.rb](../packaging/homebrew/rdrop.rb), uses a tagged source archive and its verified SHA-256 checksum. The `head` option tracks main. Update the source URL and checksum together after each release tag exists; source archive checksums differ from native release archive checksums.
 
 ## npm packages
 
