@@ -53,7 +53,7 @@ func (c CommandProvider) Post(ctx context.Context, _ string, body, out any) erro
 	// A local decision process needs metadata, not the Raindrop account credential.
 	for _, entry := range os.Environ() {
 		name, _, _ := strings.Cut(entry, "=")
-		if name != "RAINDROP_TOKEN" && name != "TYPESAFE_API_KEY" && name != "OPENAI_API_KEY" && name != "RDROP_MODEL_API_KEY" && name != "RDROP_DECISION_API_KEY" {
+		if name != "RAINDROP_TOKEN" && name != "TYPESAFE_API_KEY" && name != "OPENAI_API_KEY" && name != "RDROP_MODEL_API_KEY" && name != "RDROP_DECISION_API_KEY" && name != "CLOUDFLARE_API_TOKEN" {
 			command.Env = append(command.Env, entry)
 		}
 	}

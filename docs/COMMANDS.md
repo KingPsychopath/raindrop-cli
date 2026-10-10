@@ -15,7 +15,7 @@ Creates a link raindrop. Flags may appear before or after the URL.
 
 ```text
 Usage:
-  rdrop agent --model model [--base-url url] [--api responses|chat] [--json] <task>
+  rdrop agent --model model [--base-url url] [--api responses|chat] [--official] [--json] <task>
   rdrop agent --model model --allow-write [flags] <task>
 
 Runs a bounded model/tool loop. Starts with cleanup report and one page of
@@ -52,6 +52,8 @@ Lists, creates, or downloads Raindrop backups.
 
 ```text
 Usage:
+  rdrop batch add --file items.json --dry-run
+  rdrop batch add --plan reviewed-plan.json --dry-run|--yes
   rdrop batch tag --collection id --ids 1,2 --tags go,docs [--dry-run]
   rdrop batch move --collection id --ids 1,2 --to collectionID [--dry-run]
   rdrop batch delete --collection id --ids 1,2 --dry-run|--yes
@@ -77,10 +79,11 @@ Usage:
 
 Read-only fixed-choice classification of 1..25 bookmarks. Taxonomy is a JSON
 object of category names and descriptions. needs_review is reserved.
-Configure RDROP_DECISION_PROVIDER=systemone (default) or command.
+Configure RDROP_DECISION_PROVIDER=systemone (default), cloudflare or command.
 HTTP: RDROP_DECISION_BASE_URL, RDROP_DECISION_API_KEY, RDROP_DECISION_MODEL.
 Defaults to Jev; TYPESAFE_* variables remain supported. Loopback needs no key.
 Command: RDROP_DECISION_COMMAND and optional RDROP_DECISION_ARGS JSON array.
+Cloudflare: CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN; model defaults clef-flash.
 Metadata sent: ID, title, link, excerpt, tags. Private notes are omitted.
 Scores are provider-specific; calibrate thresholds using reviewed examples.
 ```
@@ -289,10 +292,17 @@ Lists raindrops. Human output is tab-separated; --json is best for agents and jq
 
 ```text
 Usage:
-  rdrop mcp serve [--allow-write]
-  rdrop mcp tools [--allow-write]
+  rdrop mcp serve [--allow-write] [--official]
+  rdrop mcp tools [--allow-write] [--official] [--search query | --name tool] [--limit n]
+  rdrop mcp call --name tool [--input args.json] [--official] [--allow-write]
 
-Runs an MCP stdio server, read-only by default. Discovery is offline JSON.
+Runs an MCP stdio server, read-only by default. Default discovery is offline JSON.
+Search ranks names/descriptions and returns up to 5 schemas; --name inspects one.
+--official authenticates to Raindrop's hosted MCP and imports documented reads,
+including semantic search and AI audits; upstream plan/service limits apply.
+mcp call runs one validated tool with JSON arguments (file limit 2 MiB).
+Context/organize tool pairs need a persistent MCP/agent session; the CLI has
+standalone context and organize plan commands for saved files.
 --allow-write exposes mutations; confirm:true is caller intent, not human approval.
 The host must enforce authorization. Stdout is reserved for protocol messages.
 ```

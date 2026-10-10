@@ -8,6 +8,8 @@
 - Bounded direct-model loop for Responses and compatible Chat Completions providers, with exact plan capture.
 - Existing-tag/collection context, explicit naming policy, provider-neutral multi-tag/move proposals and account-bound snapshot apply/recovery.
 - Optional System One HTTP decisions (Jev/Laya-compatible), trusted local command decisions and a Laya Python adapter.
+- Cloudflare Clef decision adapter, searchable tool schemas, and shared Codex/Claude plugin packaging.
+- Optional official MCP reads for semantic search, extracted content and AI-assisted library audits, alongside reviewed bulk creation.
 - Executor portable REST app with real exact-call host approval, checked against an exact framework version.
 - Six native release targets, npm platform packages/launcher under `@machineyearn`, checksums and a non-root container.
 - Command reference generated from CLI help; source Go version used in CI.
@@ -22,6 +24,7 @@
 
 - Evaluate Jev, Laya and other local models on reviewed bookmark examples; fixture checks do not prove semantic quality, performance or equal calibration.
 - Jev live inference requires an API key. Representative live write journeys require an intentionally selected disposable Raindrop library; no live bookmark mutation was performed during this release verification.
+- Hosted Clef live inference requires a Workers AI token/account. Local Clef serving and additional note sources such as Obsidian need separate runtime/storage adapters and evidence.
 
 ## Future options, with separate evidence
 

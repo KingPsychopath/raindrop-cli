@@ -13,6 +13,9 @@ func (a *app) batch(ctx context.Context, args []string) error {
 	if len(args) == 0 {
 		return fmt.Errorf("batch subcommand required")
 	}
+	if args[0] == "add" {
+		return a.batchAdd(ctx, args[1:])
+	}
 	fs := flag.NewFlagSet("batch "+args[0], flag.ContinueOnError)
 	collection := fs.Int64("collection", 0, "source collection id")
 	idsFlag := fs.String("ids", "", "comma-separated bookmark ids")

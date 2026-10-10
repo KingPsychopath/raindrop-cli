@@ -1,0 +1,19 @@
+{
+  "name": "raindrop",
+  "version": "0.2.0",
+  "description": "Find and organize your Raindrop library with reviewed plans.",
+  "author": {
+    "name": "Machineyearn"
+  },
+  "homepage": "https://github.com/KingPsychopath/raindrop-cli",
+  "repository": "https://github.com/KingPsychopath/raindrop-cli",
+  "license": "MIT",
+  "keywords": [
+    "raindrop",
+    "bookmarks",
+    "organization",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}

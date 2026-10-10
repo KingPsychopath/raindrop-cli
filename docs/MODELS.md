@@ -17,6 +17,7 @@ rdrop agent --base-url http://127.0.0.1:1234/v1 --api chat --model local-model -
 | `--api responses` | Default: Responses tools and function-call outputs; `store:false`; replays encrypted reasoning output |
 | `--api chat` | Chat Completions function tools and tool messages for compatible gateways |
 | `--allow-write` | Authorizes model-selected mutations; otherwise only reads and planning tools |
+| `--official` | Also imports Raindrop's hosted read tools; authenticated network discovery and upstream plan limits apply |
 | `--max-steps`, `--max-tool-calls` | Default 12 model requests and 32 total calls |
 | `--max-output-tokens` | Default 4096 per model request |
 | `--timeout` | Default 10 minutes overall; individual HTTP request limit 120 seconds |
@@ -26,7 +27,9 @@ The loop reads a cleanup report and bounded context first. It validates every to
 
 The caller chooses the right wire protocol and a model that supports it. Not every OpenAI-compatible service implements Responses, tool calls or reasoning replay. OpenAI's current tool-calling models may require Responses; consult the [official function-calling guide](https://developers.openai.com/api/docs/guides/function-calling). This client is a bounded synchronous loop, without streaming, persisted sessions or unattended scheduling.
 
-`--allow-write` is explicit authorization to expose account, sharing and destructive tools to the model. For a review-first workflow, leave it off, inspect `.plans`, and run `cleanup apply` yourself. A model-generated `confirm:true` is not evidence of a person approving that particular call.
+`--allow-write` is explicit authorization to expose account, sharing and destructive tools to the model. For a review-first workflow, leave it off and inspect `.plans`. Use `cleanup apply` for existing-bookmark plans, or `batch add --plan` for creation plans with `action:create`. A model-generated `confirm:true` is not evidence of a person approving that particular call.
+
+Cloudflare Workers AI can also host the conversational model. Put its API token in `RDROP_MODEL_API_KEY` and use `--base-url https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/v1 --api chat` with an actual tool-capable model. Its Responses endpoint currently supports GPT-OSS models; choose `--api responses` only for a supported model. See [Cloudflare's compatibility guide](https://developers.cloudflare.com/workers-ai/configuration/open-ai-compatibility/). Clef is a separate typed-decision model, not a conversational Responses model.
 
 ## Typed decision providers
 
@@ -36,7 +39,7 @@ The caller chooses the right wire protocol and a model that supports it. Not eve
 {"reference":"Technical documentation", "read-later":"Long-form reading"}
 ```
 
-The shared System One request is `{model,state,questions}`. Each bookmark has its own request, containing only that bookmark's metadata and one `choice` question keyed by its ID; criteria contain your category descriptions plus `needs_review`. HTTP providers receive `POST <base-url>/systemone`. Command providers receive the same JSON on stdin and must return exactly one JSON response on stdout:
+The shared System One request is `{model,state,questions}`. Each bookmark has its own request, containing only that bookmark's metadata and one `choice` question keyed by its ID; criteria contain your category descriptions plus `needs_review`. Generic HTTP providers receive `POST <base-url>/systemone`; the Cloudflare adapter uses its Workers AI model endpoint and unwraps its result envelope. Command providers receive the same JSON on stdin and must return exactly one JSON response on stdout:
 
 ```json
 {"model":"local-model","answers":{"101":{"type":"choice","choice":"reference","confidence":0.9,"probabilities":{"reference":0.85,"read-later":0.1,"needs_review":0.05},"abstention":false}}}
@@ -71,6 +74,22 @@ rdrop classify --ids 101,102 --taxonomy taxonomy.json --json
 ```
 
 Check the chosen Laya version's serving options and port. Initial use can download checkpoints. For offline use, configure local checkpoints using Laya's [local setup guide](https://github.com/NandhaKishorM/laya/blob/main/LOCAL_SETUP.md). Upstream benchmark results do not establish accuracy or latency for your bookmark taxonomy.
+
+### Cloudflare Clef
+
+[Clef](https://developers.cloudflare.com/workers-ai/models/clef/) uses the System One decision contract on Workers AI. Use a Workers AI API token in the private environment and your account ID:
+
+```sh
+export RDROP_DECISION_PROVIDER=cloudflare
+export CLOUDFLARE_ACCOUNT_ID=YOUR_32_CHARACTER_ACCOUNT_ID
+# Set CLOUDFLARE_API_TOKEN through your private secret environment.
+export RDROP_DECISION_MODEL=clef-flash
+rdrop classify --ids 101,102 --taxonomy taxonomy.json --json
+```
+
+Supported selectors are `clef`, `clef-flash` and `clef-omni`; the default is `clef-flash`. The adapter posts to `/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/cloudflare/MODEL`, validates the Cloudflare success envelope, and feeds its answers into the same confidence/distribution checks. `RDROP_DECISION_API_KEY` overrides `CLOUDFLARE_API_TOKEN`; `RDROP_DECISION_BASE_URL` overrides the API root. It does not fall back to a TypeSafe key. The current classification input contains text/JSON metadata, not downloaded media.
+
+Cloudflare provides [open weights](https://developers.cloudflare.com/changelog/post/2026-10-01-clef-workers-ai/) as well. A local Clef runtime needs to expose the generic System One HTTP/command contract; weights alone do not provide a server. Local Clef deployment and live hosted Clef inference were not verified in this release. REST envelope, isolated state, malformed replies and path validation are covered by fixture tests.
 
 ### Local command adapter
 

@@ -10,7 +10,7 @@
   <text x="132" y="54" fill="#9FB0C3" font-family="Menlo, Consolas, monospace" font-size="15">rdrop - Shell commands, MCP tools and model workflows</text>
   <text x="48" y="112" fill="#5EEAD4" font-family="Menlo, Consolas, monospace" font-size="18">$</text>
   <text x="72" y="112" fill="#E6EDF3" font-family="Menlo, Consolas, monospace" font-size="18">rdrop mcp tools | jq length</text>
-  <text x="72" y="146" fill="#A7F3D0" font-family="Menlo, Consolas, monospace" font-size="18">25 read-only tools; writes require --allow-write</text>
+  <text x="72" y="146" fill="#A7F3D0" font-family="Menlo, Consolas, monospace" font-size="18">26 read-only tools; writes require --allow-write</text>
   <text x="48" y="198" fill="#5EEAD4" font-family="Menlo, Consolas, monospace" font-size="18">$</text>
   <text x="72" y="198" fill="#E6EDF3" font-family="Menlo, Consolas, monospace" font-size="18">rdrop collections --tree</text>
   <text x="72" y="232" fill="#C9D1D9" font-family="Menlo, Consolas, monospace" font-size="18">Reference / Engineering        184</text>

@@ -1,0 +1,15 @@
+{
+  "name": "machineyearn",
+  "owner": {
+    "name": "Machineyearn"
+  },
+  "plugins": [
+    {
+      "name": "raindrop",
+      "source": "./integrations/agent-plugin",
+      "description": "Find and organize your Raindrop library with reviewed plans.",
+      "version": "0.2.0"
+    }
+  ],
+  "description": "Raindrop library tools and reviewed organizing workflows from Machineyearn."
+}

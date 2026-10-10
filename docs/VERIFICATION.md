@@ -57,6 +57,23 @@ rdrop classify --ids REAL_ID --taxonomy taxonomy.json --json
 
 Jev is a decision provider. A tool-capable model such as Qwen owns the conversational loop and can call `raindrop_classify`, which delegates to Jev or Laya.
 
+## Official MCP and agent packages
+
+The live official MCP connection discovered all nine documented read tools. Calls to account, semantic bookmark search, extracted content, popular keywords, collections, tags, highlights, misplaced bookmarks and mistagged bookmarks completed without protocol/tool errors. The audit calls selected one tag and a collection containing two bookmarks; empty suggestions are a valid outcome, not an accuracy evaluation. Their private request/result artifacts remain under `.artifacts/e2e` and are not release assets.
+
+```sh
+rdrop mcp tools --official --search 'semantic search'
+rdrop mcp tools --official --name raindrop_official_find_bookmarks
+# arguments.json: {"search":"software development documentation","limit":1}
+rdrop mcp call --official --name raindrop_official_find_bookmarks --input arguments.json
+```
+
+Inspect each current upstream schema before preparing other calls. [Official coverage](OFFICIAL_MCP.md) records pagination and subscription differences. Fixtures independently prove that upstream mutations and unknown reads are excluded, invalid input stays local, and redirects cannot forward the credential.
+
+The shared plugin skill passed the skill validator. Claude's plugin and marketplace validators passed, and the Codex marketplace resolver recognized `raindrop@machineyearn`. The pinned MCP launcher still requires the npm package and private CLI configuration; manifest validation alone is not an end-to-end client UI test. [Install commands](CLIENTS.md).
+
+The Clef adapter passed fixture tests for the Workers AI request/envelope, isolated bookmark state, review thresholds and invalid account/model paths. No Workers AI credentials were configured for live Clef inference. Jev/Clef live quality and local Clef serving remain separate verification work.
+
 ## Use the models with your own library
 
 ```sh

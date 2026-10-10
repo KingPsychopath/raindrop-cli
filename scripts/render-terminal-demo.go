@@ -27,7 +27,7 @@ func render(w io.Writer) error {
 		{132, 54, "#9FB0C3", 15, "rdrop - Shell commands, MCP tools and model workflows"},
 		{48, 112, "#5EEAD4", 18, "$"},
 		{72, 112, "#E6EDF3", 18, "rdrop mcp tools | jq length"},
-		{72, 146, "#A7F3D0", 18, "25 read-only tools; writes require --allow-write"},
+		{72, 146, "#A7F3D0", 18, "26 read-only tools; writes require --allow-write"},
 		{48, 198, "#5EEAD4", 18, "$"},
 		{72, 198, "#E6EDF3", 18, "rdrop collections --tree"},
 		{72, 232, "#C9D1D9", 18, "Reference / Engineering        184"},

@@ -14,6 +14,10 @@ This project uses semantic version tags for releases. Dates are in UTC.
 - ACP session configuration, official Raindrop/Executor MCP connection helpers and a portable Executor app with exact-call host approval.
 - Native npm launcher/platform build, pack and integrity-checked publish scripts, non-root Dockerfile and generated command reference.
 - Repeatable real Qwen/Laya verification against a disposable library and local Executor setup helpers.
+- Optional official MCP read bridge for semantic search, extracted content, AI audits and keyword suggestions, with origin-bound authentication and a fixed read allowlist.
+- Searchable tool discovery, exact-schema inspection and one-call CLI execution.
+- Reviewed account-bound bulk creation plans, with destination validation and explicit uncertain-outcome recovery.
+- Cloudflare Clef decision adapter and shared Codex/Claude plugin manifests, marketplaces and organizing skill.
 
 - `scripts/render-terminal-demo.go` and `make assets` for regenerating the README terminal SVG.
 - Build metadata injection for `rdrop version`.
@@ -30,6 +34,7 @@ This project uses semantic version tags for releases. Dates are in UTC.
 - Isolate each classified bookmark in its own provider state after real local inference exposed interference between unrelated items.
 - Bind Executor credentials to the Raindrop API host and add a safe account health check.
 - Restore the README status/version badges and update the terminal graphic.
+- Lead the README with user workflows, add one organizing illustration, and keep packaged documentation links usable outside the checkout.
 - Rewrite command, integration, model, organizing and packaging guides.
 
 - Future macOS release artifacts use `macos` in filenames instead of Go's internal `darwin` target name.

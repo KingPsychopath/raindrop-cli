@@ -7,7 +7,7 @@ Stable endpoints follow the [official Raindrop REST documentation](https://devel
 | Account | `doctor`, `me`, `user update`, `stats` | User, stats; update with write opt-in |
 | Bookmarks | `list`, `search`, `get`, `add`, `update`, `delete`, `suggest` | Paged list with search, get, suggest; writes with opt-in |
 | Search helpers | `untagged`, `duplicates`, `broken`, `filters` | Same structured reads |
-| Bulk bookmarks | `batch tag`, `batch move`, `batch delete` | Exact-ID tag/move/delete previews; saved cleanup apply with write opt-in |
+| Bulk bookmarks | Reviewed `batch add`, plus `batch tag/move/delete` | Account-bound creation preview/apply; exact-ID update/delete previews |
 | Organizing | `cleanup report`, `cleanup plan/apply`, `context`, `organize plan` | Report, context, validated multi-tag/move plan, saved apply |
 | Typed decisions | `classify` | `raindrop_classify`, configured optional provider |
 | Collections | Roots, children, `--tree`; create/update/delete/sort/expand/merge/clean/empty-trash | Same JSON operations; writes with opt-in |
@@ -19,8 +19,8 @@ Stable endpoints follow the [official Raindrop REST documentation](https://devel
 | Backups | List/create/download | List and create; create queues an export/email with opt-in |
 | Bytes and local files | Export, cache, backup download, import file, upload file, cover upload | CLI only |
 | Raw JSON API | `raw METHOD PATH [json-body]` | CLI only |
-| Connections | `connect mcp/acp/raindrop/executor`, `config` | Offline setup helpers; not remote tool calls |
-| Direct model loop | `agent` | Uses the same local catalog; never recursively exposed as a tool |
+| Connections | `connect mcp/acp/raindrop/executor`, `config` | Offline setup helpers; `--official` separately connects documented hosted reads |
+| Direct model loop | `agent` | Shared catalog, optional hosted reads; never recursively exposed as a tool |
 
 `rdrop mcp tools` is the authoritative read-only tool list; `rdrop mcp tools --allow-write` includes writes. Each tool carries an input schema and annotations; the handler validates the schema before dispatching to the shared command code. Full inputs and CLI flags are in [COMMANDS.md](COMMANDS.md).
 
@@ -30,7 +30,7 @@ Raindrop's documented [multiple-bookmark endpoints](https://developer.raindrop.i
 
 Tag append plans preserve existing names because individual Raindrop updates replace the `tags` array. Direct bulk append uses the documented bulk behavior. Context/proposal planning supports exact tag strings including punctuation, without CSV conversion; CLI `--tags` and tag-merge commands use comma-separated values.
 
-OAuth app provisioning and a public authenticated MCP HTTP server are not implemented. A test token is sufficient for the local REST-backed server; some API operations such as permanent copies are Pro-only. The separate [official Raindrop remote MCP](https://developer.raindrop.io/mcp/mcp) has its own beta/Pro and auth requirements.
+OAuth app provisioning and a public authenticated MCP HTTP server are not implemented. A test token is sufficient for the local REST-backed server; some API operations such as permanent copies are Pro-only. The separate [official Raindrop remote MCP](https://help.raindrop.io/integrations/mcp) restricts text/semantic search on the free plan. [Official workflow comparison and the optional bridge](OFFICIAL_MCP.md).
 
 ## Output and failure contracts
 

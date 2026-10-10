@@ -21,6 +21,7 @@ type toolEngine struct {
 	api      *raindrop.Client
 	write    bool
 	contexts contextCache
+	official *officialBridge
 }
 
 func (e *toolEngine) tools() []*mcp.Tool {
@@ -37,6 +38,10 @@ func (e *toolEngine) tools() []*mcp.Tool {
 	}
 	tools = append(tools, classifyTool())
 	tools = append(tools, contextTools()...)
+	tools = append(tools, createTools(e.write)...)
+	if e.official != nil {
+		tools = append(tools, e.official.tools...)
+	}
 	return tools
 }
 
@@ -94,6 +99,12 @@ func (e *toolEngine) call(ctx context.Context, name string, arguments json.RawMe
 	}
 	if err := validateToolInput(tool, arguments); err != nil {
 		return toolError(err)
+	}
+	if isOfficialTool(name) && e.official != nil {
+		return e.official.call(ctx, name, arguments)
+	}
+	if name == "raindrop_add_batch_preview" || name == "raindrop_add_batch_apply" {
+		return e.createCall(ctx, name, arguments)
 	}
 	if name == "raindrop_context" || name == "raindrop_organize_plan" {
 		return e.contextCall(ctx, name, arguments)
@@ -164,12 +175,25 @@ func (a *app) mcp(ctx context.Context, args []string) error {
 	if len(args) == 0 || isHelpArg(args[0]) {
 		return a.help([]string{"mcp"})
 	}
-	if args[0] != "serve" && args[0] != "tools" {
-		return fmt.Errorf("usage: rdrop mcp serve|tools [--allow-write]")
+	if args[0] != "serve" && args[0] != "tools" && args[0] != "call" {
+		return fmt.Errorf("usage: rdrop mcp serve|tools|call [flags]")
 	}
 	fs := flag.NewFlagSet("mcp "+args[0], flag.ContinueOnError)
 	write := fs.Bool("allow-write", false, "expose mutation tools")
+	official := fs.Bool("official", false, "connect official hosted read tools using the configured Raindrop token")
 	fs.Bool("json", true, "tool discovery always prints JSON")
+	var search, name string
+	var inputFile string
+	var limit int
+	if args[0] == "tools" {
+		fs.StringVar(&search, "search", "", "rank tools matching words in names and descriptions")
+		fs.StringVar(&name, "name", "", "inspect one exact tool schema")
+		fs.IntVar(&limit, "limit", 0, "maximum results; search defaults to 5")
+	}
+	if args[0] == "call" {
+		fs.StringVar(&name, "name", "", "exact tool name")
+		fs.StringVar(&inputFile, "input", "", "JSON arguments file; default is an empty object")
+	}
 	if err := parseFlags(fs, args[1:]); err != nil {
 		return err
 	}
@@ -177,13 +201,44 @@ func (a *app) mcp(ctx context.Context, args []string) error {
 		return err
 	}
 	engine := &toolEngine{write: *write}
+	input := json.RawMessage(`{}`)
+	if args[0] == "call" {
+		if name == "" {
+			return fmt.Errorf("mcp call requires --name")
+		}
+		if inputFile != "" {
+			if err := readJSONFile(inputFile, &input); err != nil {
+				return err
+			}
+		}
+	}
+	if *official {
+		if err := engine.enableOfficial(ctx); err != nil {
+			return err
+		}
+		defer engine.official.session.Close()
+	}
 	if args[0] == "tools" {
-		return a.print(engine.tools(), nil)
+		tools, err := discoverTools(engine.tools(), search, name, limit)
+		if err != nil {
+			return err
+		}
+		return a.print(tools, nil)
 	}
 	cfg, err := config.Load()
 	if err != nil {
 		return err
 	}
 	engine.api = raindrop.NewClient(cfg.APIBaseURL, cfg.Token)
+	if args[0] == "call" {
+		result := engine.call(ctx, name, input)
+		if err := a.print(result, nil); err != nil {
+			return err
+		}
+		if result.IsError {
+			return fmt.Errorf("MCP tool returned an error")
+		}
+		return nil
+	}
 	return engine.server().Run(ctx, &mcp.StdioTransport{})
 }

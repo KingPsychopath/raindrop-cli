@@ -41,7 +41,7 @@ Output is the params object for `session/new`, after your client initializes a c
 rdrop connect raindrop
 ```
 
-Endpoint: `https://api.raindrop.io/rest/v2/ai/mcp`. The [official documentation](https://developer.raindrop.io/mcp/mcp) currently describes a Pro beta service using Streamable HTTP and OAuth 2.1 or bearer auth. Configure auth in the client; generated output omits credentials. Local `rdrop` MCP instead uses REST and does not require that remote MCP service; individual Pro-only REST features still require Pro.
+Endpoint: `https://api.raindrop.io/rest/v2/ai/mcp`. The [official setup guide](https://help.raindrop.io/integrations/mcp) describes Streamable HTTP with OAuth 2.1 or bearer auth; the free plan restricts text/semantic search. Configure auth in the client; generated output omits credentials. Local `rdrop` MCP uses REST by default, with optional documented hosted reads through `--official`. [Bridge and workflow comparison](OFFICIAL_MCP.md). Individual Pro-only REST features still require Pro.
 
 `RAINDROP_MCP_ENDPOINT` or `connect raindrop --url` overrides the config URL. It is not used by local `mcp serve` or the direct model loop.
 
