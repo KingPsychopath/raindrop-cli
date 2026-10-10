@@ -51,7 +51,7 @@ The source in [integrations/executor](../integrations/executor) is a portable ap
 
 The app uses `never()` for reads and `always()` for its two writes. The host requires approval bound to the exact tool and arguments; `confirm:true` alone cannot bypass it. Requests use a fixed API origin and manual redirect handling, rejecting 3xx responses. Appending tags preserves existing names, with the same concurrent-edit limitations as any read-then-write operation.
 
-The adapter is checked against `apps@0.0.1-beta.74`. Executor requires the **target host's exact framework version**, not `apps@latest`:
+The adapter is checked against `apps@0.0.1-beta.74`. Dependabot excludes `apps` because the target host controls that version; the stable package on npm is unrelated to this framework. Executor requires the **target host's exact framework version**, not `apps@latest`:
 
 ```sh
 executor apps framework

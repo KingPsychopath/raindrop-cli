@@ -22,6 +22,10 @@ updates:
 
   - package-ecosystem: "npm"
     directory: "/integrations/executor"
+    # Executor chooses its exact framework version. npm's stable apps package
+    # is unrelated; update this dependency manually against the target host.
+    ignore:
+      - dependency-name: "apps"
     schedule:
       interval: "weekly"
     labels: ["dependencies"]
