@@ -105,3 +105,19 @@ func TestReportSearchQuotingAndScopedTagPlans(t *testing.T) {
 		t.Fatalf("unsafe report=%+v", report)
 	}
 }
+
+func TestApplyRejectsOversizedInputBeforeAnyAPIRequest(t *testing.T) {
+	requests := 0
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { requests++ }))
+	defer server.Close()
+	path := t.TempDir() + "/plan.json"
+	// The first object is within the limit; extra data exists after 2 MiB.
+	if err := os.WriteFile(path, []byte(`{}`+strings.Repeat(" ", 2<<20)+`{"action":"delete"}`), 0600); err != nil {
+		t.Fatal(err)
+	}
+	var out bytes.Buffer
+	err := (&app{api: raindrop.NewClient(server.URL, "fixture"), out: &out}).cleanupApply(context.Background(), []string{path, "--yes"})
+	if err == nil || !strings.Contains(err.Error(), "exceeds 2 MiB") || requests != 0 {
+		t.Fatalf("oversized input reached apply: requests=%d error=%v", requests, err)
+	}
+}

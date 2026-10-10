@@ -69,7 +69,7 @@ rdrop cleanup apply reviewed-plan.json --dry-run
 rdrop cleanup apply reviewed-plan.json --yes
 ```
 
-Apply validates the file version, digest, account and every snapshot before the first write. Tags and a move on the same bookmark are one update. Existing tags and unrelated fields remain intact. Manual tag/move/delete plans are also available through `cleanup plan` and ID-based batch `--dry-run`.
+Saved JSON inputs are limited to 2 MiB and must contain one object with known fields; narrow the selection if needed. Apply validates the file version, digest, account and every snapshot before the first write. Tags and a move on the same bookmark are one update. Existing tags and unrelated fields remain intact. Manual tag/move/delete plans are also available through `cleanup plan` and ID-based batch `--dry-run`.
 
 There is no Raindrop transaction or conditional version update. A concurrent edit after checking can race a write. Failure after some writes returns `status:partial`, applied IDs, remaining IDs and an `uncertainId`: the failed request may have reached the server. Inspect affected bookmarks, export a fresh context and plan only remaining work. The CLI does not retry mutations automatically. A replay commonly fails stale checks, but digest validation is not a substitute for inspecting uncertain outcomes.
 

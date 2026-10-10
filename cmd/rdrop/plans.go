@@ -2,11 +2,8 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"flag"
 	"fmt"
-	"io"
-	"os"
 
 	"github.com/KingPsychopath/raindrop-cli/internal/cli"
 	"github.com/KingPsychopath/raindrop-cli/internal/organize"
@@ -49,20 +46,9 @@ func (a *app) cleanupApply(ctx context.Context, args []string) error {
 	if fs.NArg() != 1 || *yes == *dryRun {
 		return fmt.Errorf("usage: rdrop cleanup apply <plan.json> --dry-run|--yes")
 	}
-	file, err := os.Open(fs.Arg(0))
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	dec := json.NewDecoder(io.LimitReader(file, 2<<20))
-	dec.DisallowUnknownFields()
 	var plan organize.Plan
-	if err := dec.Decode(&plan); err != nil {
+	if err := readJSONFile(fs.Arg(0), &plan); err != nil {
 		return fmt.Errorf("decode cleanup plan: %w", err)
-	}
-	var extra any
-	if err := dec.Decode(&extra); err != io.EOF {
-		return fmt.Errorf("cleanup plan must contain exactly one JSON object")
 	}
 	result, applyErr := organize.Apply(ctx, a.api, plan, *yes)
 	if err := cli.PrintJSON(a.out, result); err != nil {
