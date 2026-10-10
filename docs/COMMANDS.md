@@ -31,10 +31,10 @@ Limits: --max-steps 12, --max-tool-calls 32, --max-output-tokens 4096,
 
 ```text
 Usage:
-  rdrop backup create
+  rdrop backup create [--json]
   rdrop backup download <backup-id> --format csv|html > backup.csv
 
-Creates or downloads backups.
+Creates or downloads backups. Creation queues an export and Raindrop emails the account owner when ready. --json returns queued status and the provider message.
 ```
 
 ## backups
@@ -42,7 +42,7 @@ Creates or downloads backups.
 ```text
 Usage:
   rdrop backups
-  rdrop backup create
+  rdrop backup create [--json]
   rdrop backup download <backup-id> --format csv|html > backup.csv
 
 Lists, creates, or downloads Raindrop backups.

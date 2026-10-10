@@ -136,12 +136,20 @@ func (a *app) backup(ctx context.Context, args []string) error {
 	}
 	switch args[0] {
 	case "create":
-		if len(args) != 1 {
-			return fmt.Errorf("usage: rdrop backup create")
+		fs := flag.NewFlagSet("backup create", flag.ContinueOnError)
+		jsonOut := fs.Bool("json", false, "print queued status and provider message")
+		if err := parseFlags(fs, args[1:]); err != nil {
+			return err
+		}
+		if err := noArguments("backup create", fs.Args()); err != nil {
+			return err
 		}
 		data, _, err := a.api.CreateBackup(ctx)
 		if err != nil {
 			return err
+		}
+		if *jsonOut {
+			return a.print(map[string]any{"status": "queued", "message": strings.TrimSpace(string(data))}, nil)
 		}
 		_, err = a.out.Write(data)
 		if len(data) > 0 && data[len(data)-1] != '\n' {

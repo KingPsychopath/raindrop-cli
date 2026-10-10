@@ -125,13 +125,11 @@ func TestApplyRejectsOversizedInputBeforeAnyAPIRequest(t *testing.T) {
 func TestBackupCreationRequiresWriteExposureAndExplicitIntent(t *testing.T) {
 	writes := 0
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
-			writes++
-		}
-		if r.Method != "POST" || r.URL.Path != "/backups" {
+		writes++
+		if r.Method != "GET" || r.URL.Path != "/backup" {
 			t.Errorf("wrong backup API route: %s %s", r.Method, r.URL.Path)
 		}
-		w.Write([]byte(`{"result":true}`))
+		w.Write([]byte("Backup queued; the account owner receives an email when ready."))
 	}))
 	defer server.Close()
 	engine := &toolEngine{api: raindrop.NewClient(server.URL, "fixture")}
@@ -142,7 +140,7 @@ func TestBackupCreationRequiresWriteExposureAndExplicitIntent(t *testing.T) {
 	if result := engine.call(context.Background(), "raindrop_backup_create", json.RawMessage(`{}`)); !result.IsError || writes != 0 {
 		t.Fatal("backup write without intent permitted")
 	}
-	if result := engine.call(context.Background(), "raindrop_backup_create", json.RawMessage(`{"confirm":true}`)); result.IsError || writes != 1 {
+	if result := engine.call(context.Background(), "raindrop_backup_create", json.RawMessage(`{"confirm":true}`)); result.IsError || writes != 1 || result.StructuredContent.(map[string]any)["status"] != "queued" {
 		t.Fatalf("reviewed backup call failed: %+v writes=%d", result, writes)
 	}
 }

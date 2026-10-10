@@ -195,17 +195,17 @@ Manages collection sharing and collaborators.
 	"backups": `
 Usage:
   rdrop backups
-  rdrop backup create
+  rdrop backup create [--json]
   rdrop backup download <backup-id> --format csv|html > backup.csv
 
 Lists, creates, or downloads Raindrop backups.
 `,
 	"backup": `
 Usage:
-  rdrop backup create
+  rdrop backup create [--json]
   rdrop backup download <backup-id> --format csv|html > backup.csv
 
-Creates or downloads backups.
+Creates or downloads backups. Creation queues an export and Raindrop emails the account owner when ready. --json returns queued status and the provider message.
 `,
 	"suggest": `
 Usage:

@@ -16,7 +16,7 @@ Stable endpoints follow the [official Raindrop REST documentation](https://devel
 | Cover search | `covers` | Same |
 | Import helpers | `import parse-url`, `import exists`, `import file` | URL parsing and existence only |
 | Sharing | List/invite/role/remove/unshare/join | Same JSON operations; writes with opt-in |
-| Backups | List/create/download | List and create; create with opt-in |
+| Backups | List/create/download | List and create; create queues an export/email with opt-in |
 | Bytes and local files | Export, cache, backup download, import file, upload file, cover upload | CLI only |
 | Raw JSON API | `raw METHOD PATH [json-body]` | CLI only |
 | Connections | `connect mcp/acp/raindrop/executor`, `config` | Offline setup helpers; not remote tool calls |
