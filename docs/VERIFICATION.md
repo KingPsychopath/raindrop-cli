@@ -4,7 +4,7 @@ The 2026-10-10 check used macOS arm64, Python 3.12.13, Ollama 0.40.2, `qwen3:4b`
 
 ## Released executables
 
-The v0.2.0 release is tagged at `c4c997e748655bfa9b615b3d3eb17ea9952cff40`. All 14 native/npm/plugin artifacts were downloaded and checked against the release's `checksums.txt`. The exact release npm tarballs installed offline, reported the release commit, and completed a real MCP stdio handshake with 26 read-only tools. The downloaded native executable also passed the complete three-step Qwen/Laya loop, dry-run and one fixture update described below. This checks package bootstrap and transport independently of model prose. The source archive has its own Homebrew checksum. The tap's source build and formula tests passed in CI and on the tested macOS arm64 host; the installed version is `0.2.0`.
+The v0.2.0 release is tagged at `c4c997e748655bfa9b615b3d3eb17ea9952cff40`. All 14 native/npm/plugin artifacts were downloaded and checked against the release's `checksums.txt`. All seven published npm versions have registry SHA-512 integrity matching the exact release tarballs. A fresh registry installation reported the release commit and 26 read-only tools. The exact tarballs also installed offline and completed a real MCP stdio handshake. The downloaded native executable also passed the complete three-step Qwen/Laya loop, dry-run and one fixture update described below. This checks package bootstrap and transport independently of model prose. The source archive has its own Homebrew checksum. The tap's source build and formula tests passed in CI and on the tested macOS arm64 host; the installed version is `0.2.0`.
 
 To repeat with the released macOS arm64 executable instead of a development build:
 
@@ -27,7 +27,7 @@ python3 scripts/verify-models.py \
 brew test KingPsychopath/tap/rdrop
 ```
 
-Choose the matching native archive on other platforms. npm uses exact release tarballs and verifies each packaged executable before running it; registry publication additionally requires npm account 2FA or an eligible granular publishing token. [Distribution and publishing commands](PACKAGING.md).
+Choose the matching native archive on other platforms. npm uses exact release tarballs and verifies each packaged executable before running it. The documented `npx --yes @machineyearn/raindrop-cli@0.2.0 version` command passed after registry publication. Publishing requires npm account 2FA or an eligible granular publishing token. [Distribution and publishing commands](PACKAGING.md).
 
 ## Start the actual local models
 
