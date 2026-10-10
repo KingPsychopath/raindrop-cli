@@ -36,13 +36,13 @@ The caller chooses the right wire protocol and a model that supports it. Not eve
 {"reference":"Technical documentation", "read-later":"Long-form reading"}
 ```
 
-The shared System One request is `{model,state,questions}`. Each bookmark gets a `choice` question keyed by its ID; criteria contain your category descriptions plus `needs_review`. HTTP providers receive `POST <base-url>/systemone`. Command providers receive the same JSON on stdin and must return exactly one JSON response on stdout:
+The shared System One request is `{model,state,questions}`. Each bookmark has its own request, containing only that bookmark's metadata and one `choice` question keyed by its ID; criteria contain your category descriptions plus `needs_review`. HTTP providers receive `POST <base-url>/systemone`. Command providers receive the same JSON on stdin and must return exactly one JSON response on stdout:
 
 ```json
 {"model":"local-model","answers":{"101":{"type":"choice","choice":"reference","confidence":0.9,"probabilities":{"reference":0.85,"read-later":0.1,"needs_review":0.05},"abstention":false}}}
 ```
 
-Answers must cover every question exactly, use known labels, supply finite confidence and a full probability distribution between 0 and 1 summing to approximately 1 (tolerance 0.02). `needsReview` is true for abstention, `needs_review`, confidence below `--min-confidence` or chosen probability below `--min-probability`; both thresholds default to 0.8. Provider scores and calibration differ. Laya's `confidence` is its own score; the optional `x_jev_confidence` is not used by this client. Evaluate reviewed examples before trusting a threshold. Results never apply tags by themselves.
+Answers must cover every question exactly, use known labels, supply finite confidence and a full probability distribution between 0 and 1 summing to approximately 1 (tolerance 0.02). `needsReview` is true for abstention, `needs_review`, confidence below `--min-confidence` or chosen probability below `--min-probability`; both thresholds default to 0.8. Provider scores and calibration differ. Laya's `confidence` is its own score; the optional `x_jev_confidence` is not used by this client. Evaluate reviewed examples before trusting a threshold. Requests run sequentially, at most 25 per invocation. An error stops the invocation without applying anything; prefer a resident HTTP service over repeatedly loading a command adapter. Results never apply tags by themselves.
 
 ### Jev
 
@@ -53,10 +53,12 @@ The default provider is [TypeSafe System One](https://docs.typesafe.ai/introduct
 [Laya](https://github.com/NandhaKishorM/laya) provides a System One-compatible service. Install and manage its runtime separately, selecting the checkpoint and hardware appropriate to your data:
 
 ```sh
-python -m venv .venv
-. .venv/bin/activate
-python -m pip install 'laya[serve]'
-LAYA_HOST=127.0.0.1 LAYA_PORT=8000 LAYA_MODELS=english laya-serve
+uv venv --python 3.12 .venv-models
+uv pip install --python .venv-models/bin/python -r integrations/laya/requirements-live.txt
+HF_HOME="$PWD/.artifacts/hf" \
+LAYA_REVISION=7b928d828b7b0e022f929d9bd2e44165aa270148 \
+LAYA_HOST=127.0.0.1 LAYA_PORT=8000 LAYA_MODELS=english \
+.venv-models/bin/laya-serve
 ```
 
 In another shell:
@@ -76,7 +78,7 @@ The supplied Python adapter calls `Router.predict` and normalizes typed answers.
 
 ```sh
 export RDROP_DECISION_PROVIDER=command
-export RDROP_DECISION_COMMAND="$PWD/.venv/bin/python"
+export RDROP_DECISION_COMMAND="$PWD/.venv-models/bin/python"
 export RDROP_DECISION_ARGS='["/absolute/path/raindrop-cli/integrations/laya/classify.py"]'
 export RDROP_DECISION_MODEL=english
 rdrop classify --ids 101,102 --taxonomy taxonomy.json --json
@@ -93,3 +95,5 @@ Configure `RDROP_DECISION_BASE_URL`, `RDROP_DECISION_API_KEY` and `RDROP_DECISIO
 Direct models receive library counts, tag names, collection paths and selected bookmark metadata. Additional read tools, such as `get`, highlights and snapshot planning, can expose private content when the model calls them. Full apply plans returned to the model include private notes in their snapshots. Classification omits notes; MCP context keeps its raw snapshots local. Saved full contexts and plans contain private metadata and must be stored accordingly.
 
 Fixture tests verify transport, schema rejection, tool round trips, budgets, abstention and planning. They do not evaluate model quality or verify a live service/account. A useful evaluation set contains real reviewed tags/moves, ambiguous items that should abstain, existing spelling variants, long excerpts and held-out examples. Compare each provider's mistakes and coverage before changing thresholds or enabling writes.
+
+For exact tested installation commands, model revisions, real results and limits, see [live verification](VERIFICATION.md).

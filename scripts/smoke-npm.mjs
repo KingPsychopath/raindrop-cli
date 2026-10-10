@@ -20,7 +20,7 @@ try {
   fs.writeFileSync(path.join(directory, 'package.json'), '{"private":true}\n');
   const [command, args] = npmCommand(['install', '--offline', '--ignore-scripts', '--no-audit', '--no-fund', find(`rdrop-${npmOS}-${arch}-`), find('raindrop-cli-')]);
   execFileSync(command, args, { cwd: directory, stdio: 'inherit' });
-  const scope = process.env.RDROP_NPM_SCOPE ?? '@kingpsychopath';
+  const scope = process.env.RDROP_NPM_SCOPE ?? '@machineyearn';
   const launcher = path.join(directory, 'node_modules', scope, 'raindrop-cli', 'launcher.cjs');
   const result = execFileSync(process.execPath, [launcher, 'version'], { encoding: 'utf8', cwd: directory });
   if (!result.includes('commit:')) throw new Error(`Bad installed binary response: ${result}`);

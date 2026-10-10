@@ -1,10 +1,21 @@
 // A portable Executor app: REST calls run on its host; no Go executable needed.
-import { array, boolean, defineApp, defineProvider, mutation, number, object, query, router, secrets, string, type QueryContext } from 'apps';
+import { array, bearer, boolean, defineApp, defineProvider, mutation, number, object, ProviderError, query, router, secrets, string, type QueryContext } from 'apps';
 import { always, never } from 'apps/operations/approval';
 
 const raindrop = defineProvider({
   name: 'Raindrop.io',
-  auth: { apiKey: secrets({ label: 'Raindrop API token', fields: object({ token: string({ minLength: 1 }) }) }) },
+  hosts: ['api.raindrop.io'],
+  auth: { apiKey: secrets({ label: 'Raindrop API token', fields: object({ token: string({ minLength: 1 }) }), request: ({ token }) => bearer(token) }) },
+  async health({ account, fetch, signal }) {
+    const response = await fetch('https://api.raindrop.io/rest/v1/user', { signal, redirect: 'manual', headers: account.headers() });
+    if (response.status === 401) throw new ProviderError({ reason: 'unauthorized', status: 401 });
+    if (response.status === 429 || response.status >= 500) throw new ProviderError({ reason: 'unavailable', status: response.status });
+    if (!response.ok) throw new ProviderError({ reason: 'rejected', status: response.status });
+    const value = await response.json() as { result?: boolean; user?: { _id?: number; name?: unknown } };
+    if (value.result === false || !Number.isSafeInteger(value.user?._id)) throw new Error('Raindrop did not return a valid account');
+    const name = value.user?.name;
+    return { accountInfo: { externalId: String(value.user!._id), ...(typeof name === 'string' && name.length > 0 && name.length <= 255 ? { displayName: name } : {}) } };
+  },
 });
 const requirements = { accounts: { raindrop } };
 type Context = QueryContext<typeof requirements>;

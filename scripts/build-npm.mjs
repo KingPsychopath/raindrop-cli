@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const version = process.argv[2];
-const scope = process.env.RDROP_NPM_SCOPE ?? '@kingpsychopath';
+const scope = process.env.RDROP_NPM_SCOPE ?? '@machineyearn';
 if (!/^\d+\.\d+\.\d+(?:-[a-zA-Z0-9.-]+)?$/.test(version ?? '')) throw new Error('Usage: node scripts/build-npm.mjs <release-version>');
 if (!/^@[a-z0-9][a-z0-9-]*$/.test(scope)) throw new Error('RDROP_NPM_SCOPE must be a valid npm scope');
 const output = path.join(root, 'dist', 'npm');
@@ -24,7 +24,7 @@ for (const [goos, goarch, npmOS, npmCPU] of targets) {
   const name = `${scope}/rdrop-${goos}-${goarch}`;
   const sha256 = crypto.createHash('sha256').update(fs.readFileSync(path.join(directory, binary))).digest('hex');
   fs.writeFileSync(path.join(directory, 'integrity.json'), JSON.stringify({ sha256, commit, version }) + '\n');
-  fs.writeFileSync(path.join(directory, 'package.json'), JSON.stringify({ name, version, description: 'Native binary for raindrop-cli', license: 'MIT', os: [npmOS], cpu: [npmCPU], files: [binary, 'integrity.json', 'LICENSE'] }, null, 2) + '\n');
+  fs.writeFileSync(path.join(directory, 'package.json'), JSON.stringify({ name, version, description: 'Native binary for raindrop-cli', license: 'MIT', repository: { type: 'git', url: 'git+https://github.com/KingPsychopath/raindrop-cli.git' }, os: [npmOS], cpu: [npmCPU], files: [binary, 'integrity.json', 'LICENSE'] }, null, 2) + '\n');
   fs.copyFileSync(path.join(root, 'LICENSE'), path.join(directory, 'LICENSE'));
   optionalDependencies[name] = version;
 }

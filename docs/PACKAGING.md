@@ -26,20 +26,28 @@ node scripts/pack-npm.mjs
 
 Outputs under `dist/npm`:
 
-- `@kingpsychopath/raindrop-cli`: Node launcher, exact optional platform dependencies.
-- `@kingpsychopath/rdrop-{darwin,linux,windows}-{amd64,arm64}`: native executable, integrity metadata and license.
+- `@machineyearn/raindrop-cli`: Node launcher, exact optional platform dependencies.
+- `@machineyearn/rdrop-{darwin,linux,windows}-{amd64,arm64}`: native executable, integrity metadata and license.
 
-The root source manifest is private to prevent accidental publication. Generated manifests are versioned and publishable. Override the scope with `RDROP_NPM_SCOPE` while building if publishing under another owned scope. The unscoped `raindrop-cli` name is already occupied by another package; ownership of the proposed scope has not been verified.
+The root source manifest is private to prevent accidental publication. Generated manifests are versioned and publishable. Override the scope with `RDROP_NPM_SCOPE` while building if publishing under another owned scope. The unscoped `raindrop-cli` name is already occupied by another package. The authenticated publisher `machineyearningengineer` is the verified owner of the `machineyearn` npm organization.
 
 The launcher requires Node 22+, selects the installed native package, verifies its SHA-256 before execution and passes stdio/exit status through. There are no install scripts or runtime downloads. Install with optional dependencies enabled. Integrity detects a changed executable relative to its packaged metadata; it does not authenticate a compromised publisher.
 
-After verifying scope ownership and authenticating npm, a maintainer must publish each generated platform package with `npm publish --access public`, then publish the launcher at the same version. The release workflow attaches `.tgz` files to GitHub; it does **not** publish npm packages or provision credentials. Only after actual publication should examples recommend:
+Authenticate with `npm login`. Publish the exact tarballs downloaded from the matching GitHub release, so npm and the release checksums refer to the same bytes:
 
 ```sh
-npx --yes @kingpsychopath/raindrop-cli@RELEASE_VERSION mcp serve
+gh release download v0.2.0 --dir dist --pattern '*.tgz' --pattern checksums.txt
+# Verify every downloaded tarball against checksums.txt first.
+node scripts/publish-npm.mjs 0.2.0
 ```
 
-Use a pinned real release version and treat it as installed executable code. There is currently no published version of this new scoped package from this project.
+The script checks all seven package manifests, publishes each native package before the launcher, and skips an existing version only when its registry SHA-512 equals the local tarball. It stops on authentication, policy, network or integrity errors; it never overwrites a published version. npm may require browser/2FA approval. `RDROP_RELEASE_DIR` selects another artifact directory and `RDROP_NPM_SCOPE` another owned scope. The release workflow attaches `.tgz` files to GitHub; it does **not** publish npm packages or provision credentials. Install a published release with:
+
+```sh
+npx --yes @machineyearn/raindrop-cli@0.2.0 mcp serve
+```
+
+Use a pinned real release version and treat it as installed executable code. The launcher and all six platform packages share the same release version.
 
 ## Docker and digests
 

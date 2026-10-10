@@ -15,6 +15,8 @@
 node_modules/
 __pycache__/
 .venv/
+.venv-models/
+.artifacts/
 *-plan.json
 cleanup-report.json
 library-context.json
