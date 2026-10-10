@@ -18,7 +18,7 @@ The [Homebrew formula](../packaging/homebrew/rdrop.rb) and `KingPsychopath/tap` 
 
 ## npm packages
 
-v0.2.0 status (2026-10-10): all seven release tarballs are attached to the [GitHub release](https://github.com/KingPsychopath/raindrop-cli/releases/tag/v0.2.0), their checksums and packed installation passed, but npm rejected registry publication until the owner enables 2FA or supplies an eligible granular publishing token. No npm package was published. Homebrew and native archives are available now.
+v0.2.0 is published as [@machineyearn/raindrop-cli](https://www.npmjs.com/package/@machineyearn/raindrop-cli) and six native platform packages. Every registry version's SHA-512 matches its exact [GitHub release](https://github.com/KingPsychopath/raindrop-cli/releases/tag/v0.2.0) tarball. Fresh registry installation passed version and read-only MCP catalog checks on macOS arm64; Homebrew and native archives are also available.
 
 ```sh
 node --test packaging/npm/launcher.test.cjs

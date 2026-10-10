@@ -1,6 +1,6 @@
 # Connect your agent
 
-Use the native `rdrop` executable or the pinned npm launcher from a local MCP client. The server starts read-only, reads the normal private CLI configuration, and keeps stdout reserved for MCP messages. v0.2.0 npm publication is currently waiting for the owner's required 2FA setup; use native stdio configuration below until the [publishing status](PACKAGING.md#npm-packages) confirms registry availability.
+Use the native `rdrop` executable or the pinned npm launcher from a local MCP client. The server starts read-only, reads the normal private CLI configuration, and keeps stdout reserved for MCP messages. New here? Follow [three-step setup and the copyable agent prompt](START_HERE.md) first.
 
 ## Codex and Claude plugins
 

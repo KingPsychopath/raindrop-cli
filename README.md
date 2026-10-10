@@ -5,9 +5,9 @@
 [![CI](https://github.com/KingPsychopath/raindrop-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/KingPsychopath/raindrop-cli/actions/workflows/ci.yml)
 [![Release](https://github.com/KingPsychopath/raindrop-cli/actions/workflows/release.yml/badge.svg)](https://github.com/KingPsychopath/raindrop-cli/actions/workflows/release.yml)
 [![Version](https://img.shields.io/github/v/release/KingPsychopath/raindrop-cli)](https://github.com/KingPsychopath/raindrop-cli/releases/latest)
-[![npm](https://img.shields.io/npm/v/@machineyearn/raindrop-cli)](https://www.npmjs.com/package/@machineyearn/raindrop-cli)
+[![npm](https://img.shields.io/npm/v/%40machineyearn%2Fraindrop-cli?label=npm)](https://www.npmjs.com/package/@machineyearn/raindrop-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Go Report Card](https://goreportcard.com/badge/github.com/KingPsychopath/raindrop-cli)](https://goreportcard.com/report/github.com/KingPsychopath/raindrop-cli)
+[![Go version](https://img.shields.io/github/go-mod/go-version/KingPsychopath/raindrop-cli)](go.mod)
 
 Turn a growing [Raindrop.io](https://raindrop.io) library into something easier to use. Search saved links, inspect collections, find cleanup opportunities and review suggestions before making changes. Use it from your terminal or let your favorite agent do the reading and planning.
 
@@ -20,35 +20,45 @@ Turn a growing [Raindrop.io](https://raindrop.io) library into something easier 
 
 ## Get started
 
-v0.2.0 is available through Homebrew and [native downloads](https://github.com/KingPsychopath/raindrop-cli/releases/tag/v0.2.0). Its npm tarballs are built and verified; registry publication awaits the owner's required npm 2FA setup. Use Homebrew or native binaries meanwhile. [Publishing status and commands](docs/PACKAGING.md#npm-packages).
-
-Install:
+### 1. Install
 
 ```sh
 brew install KingPsychopath/tap/rdrop
-# After npm registry publication: Node 22+, optional dependencies enabled:
+# Or Node 22+, with optional dependencies enabled:
 npm install --global @machineyearn/raindrop-cli@0.2.0
 rdrop version
 ```
 
-Prefer no global npm install? Use `npx --yes @machineyearn/raindrop-cli@0.2.0 COMMAND`. [Native downloads and checksums](https://github.com/KingPsychopath/raindrop-cli/releases/latest) are available for macOS, Linux and Windows on Intel/AMD and ARM. You can also build with `make install`; [packaging details](docs/PACKAGING.md).
+Prefer no global install? Use `npx --yes @machineyearn/raindrop-cli@0.2.0 COMMAND`. [Native downloads](https://github.com/KingPsychopath/raindrop-cli/releases/latest) cover macOS, Linux and Windows on Intel/AMD and ARM. [Builds and checksums](docs/PACKAGING.md).
 
-Create a token in your [Raindrop integration settings](https://app.raindrop.io/settings/integrations). Put this line in `~/.config/rdrop/env`, with directory permissions `700` and file permissions `600`:
+### 2. Connect Raindrop
+
+Create a token in your [Raindrop integration settings](https://app.raindrop.io/settings/integrations). Add it to the private file `~/.config/rdrop/env`:
 
 ```text
 RAINDROP_TOKEN=your_token_here
 ```
 
-Then try:
+Give the directory permissions `700` and the file `600`, then run `rdrop doctor`. Keep the token out of chat and Git. [Setup and troubleshooting](docs/START_HERE.md).
 
-```sh
-rdrop doctor
-rdrop collections --tree
-rdrop search 'type:article #go' --json
-rdrop cleanup report --json
+### 3. Ask your agent
+
+Copy this into Codex, Claude or your preferred coding agent. It can help with setup too:
+
+```text
+Set up https://github.com/KingPsychopath/raindrop-cli so you can help
+manage my Raindrop library. Use its plugin/MCP when available, otherwise
+use the CLI. Check installation and authentication; have me add the token
+privately. Use the existing model and configured services first.
+
+Start with a cleanup report and a small sample. Use my existing tags and
+collections. Choose useful tools for search, content, classification and
+planning; connect extra model providers, Executor or ACP only if needed.
+Show the exact proposed changes and a dry-run. Preserve my tags and notes,
+flag uncertain suggestions, and apply only the exact plan I approve.
 ```
 
-Environment variables take precedence. Custom token/config paths and redacted diagnostics are documented in [configuration](docs/COMMANDS.md#config). Keep tokens in private configuration, outside chat and Git.
+[Connect an agent](docs/CLIENTS.md), or start in your shell with `rdrop collections --tree`, `rdrop search 'type:article #go' --json` and `rdrop cleanup report --json`.
 
 ## Choose your workflow
 
