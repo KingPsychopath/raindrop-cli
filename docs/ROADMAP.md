@@ -1,6 +1,6 @@
 # Current scope and remaining work
 
-## Implemented in development source
+## v0.2.0 scope
 
 - Native Go CLI with stable REST commands, tree paths, sanitized TSV and JSON/byte pipelines.
 - Local MCP stdio server using the official Go SDK, read-only defaults, validated inputs, organizing prompt/resource and explicit mutation exposure.
@@ -9,16 +9,19 @@
 - Existing-tag/collection context, explicit naming policy, provider-neutral multi-tag/move proposals and account-bound snapshot apply/recovery.
 - Optional System One HTTP decisions (Jev/Laya-compatible), trusted local command decisions and a Laya Python adapter.
 - Executor portable REST app with real exact-call host approval, checked against an exact framework version.
-- Six native release targets, buildable npm platform packages/launcher, checksums and a non-root container.
+- Six native release targets, npm platform packages/launcher under `@machineyearn`, checksums and a non-root container.
 - Command reference generated from CLI help; source Go version used in CI.
 
-## Release and runtime evidence still needed
+## Runtime evidence
 
-- Publish a reviewed GitHub release, update the Homebrew tag/checksum and verify downloads.
-- Verify npm namespace ownership and intentionally publish platform packages followed by the launcher. No npm release is implied by build artifacts.
-- Deploy the Executor adapter to an explicitly selected compatible host and bind an account.
+- Real Laya HTTP and command inference and a real Qwen tool loop produced an exact plan, passed dry-run and preserved existing tags and notes when applied to a disposable fixture.
+- The local Executor deployment has a connected account and passed its provider health check and live cleanup/tag/collection reads.
+- [Verification commands and limits](VERIFICATION.md) record the tested model/runtime versions. [Packaging](PACKAGING.md) describes the exact release artifacts and publication process.
+
+## Evaluation still needed
+
 - Evaluate Jev, Laya and other local models on reviewed bookmark examples; fixture checks do not prove semantic quality, performance or equal calibration.
-- Verify representative live API journeys on a disposable library. Unit/integration fixtures never mutate the user's account.
+- Jev live inference requires an API key. Representative live write journeys require an intentionally selected disposable Raindrop library; no live bookmark mutation was performed during this release verification.
 
 ## Future options, with separate evidence
 
