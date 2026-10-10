@@ -14,9 +14,11 @@ The Go version is declared in `go.mod`; CI uses that file. The release workflow 
 
 For a released archive, download it and the matching `checksums.txt` from the same [GitHub release](https://github.com/KingPsychopath/raindrop-cli/releases). On Linux run `sha256sum --check checksums.txt --ignore-missing`; on macOS compare `shasum -a 256 YOUR_ARCHIVE` to that archive's entry before extracting it. Do not reuse another release's checksums.
 
-The supplied [Homebrew formula](../packaging/homebrew/rdrop.rb) retains its existing v0.1.0 source URL and verified checksum. Update both when publishing a new release; its `head` option tracks main. A formula's description does not imply that an old tagged version contains development features.
+The [Homebrew formula](../packaging/homebrew/rdrop.rb) and `KingPsychopath/tap` use the v0.2.0 source archive and its verified SHA-256 checksum. The `head` option tracks main. Update the source URL and checksum together after each release tag exists.
 
 ## npm packages
+
+v0.2.0 status (2026-10-10): all seven release tarballs are attached to the [GitHub release](https://github.com/KingPsychopath/raindrop-cli/releases/tag/v0.2.0), their checksums and packed installation passed, but npm rejected registry publication until the owner enables 2FA or supplies an eligible granular publishing token. No npm package was published. Homebrew and native archives are available now.
 
 ```sh
 node --test packaging/npm/launcher.test.cjs
@@ -41,7 +43,7 @@ gh release download v0.2.0 --dir dist --pattern '*.tgz' --pattern checksums.txt
 node scripts/publish-npm.mjs 0.2.0
 ```
 
-The script checks all seven package manifests, publishes each native package before the launcher, and skips an existing version only when its registry SHA-512 equals the local tarball. It stops on authentication, policy, network or integrity errors; it never overwrites a published version. npm may require browser/2FA approval. `RDROP_RELEASE_DIR` selects another artifact directory and `RDROP_NPM_SCOPE` another owned scope. The release workflow attaches `.tgz` files to GitHub; it does **not** publish npm packages or provision credentials. Install a published release with:
+The script checks all seven package manifests, publishes each native package before the launcher, and skips an existing version only when its registry SHA-512 equals the local tarball. It stops on authentication, policy, network or integrity errors; it never overwrites a published version. npm requires account 2FA or an eligible granular publishing token and may prompt for browser approval. `npm login` alone does not satisfy this publishing requirement; see [npm's publishing policy](https://docs.npmjs.com/requiring-2fa-for-package-publishing-and-settings-modification/). `RDROP_RELEASE_DIR` selects another artifact directory and `RDROP_NPM_SCOPE` another owned scope. The release workflow attaches `.tgz` files to GitHub; it does **not** publish npm packages or provision credentials. Install a published release with:
 
 ```sh
 npx --yes @machineyearn/raindrop-cli@0.2.0 mcp serve

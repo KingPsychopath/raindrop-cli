@@ -20,11 +20,13 @@ Turn a growing [Raindrop.io](https://raindrop.io) library into something easier 
 
 ## Get started
 
-Install through Homebrew or npm:
+v0.2.0 is available through Homebrew and [native downloads](https://github.com/KingPsychopath/raindrop-cli/releases/tag/v0.2.0). Its npm tarballs are built and verified; registry publication awaits the owner's required npm 2FA setup. Use Homebrew or native binaries meanwhile. [Publishing status and commands](docs/PACKAGING.md#npm-packages).
+
+Install:
 
 ```sh
 brew install KingPsychopath/tap/rdrop
-# Or Node 22+, with optional dependencies enabled:
+# After npm registry publication: Node 22+, optional dependencies enabled:
 npm install --global @machineyearn/raindrop-cli@0.2.0
 rdrop version
 ```

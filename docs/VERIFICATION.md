@@ -2,6 +2,33 @@
 
 The 2026-10-10 check used macOS arm64, Python 3.12.13, Ollama 0.40.2, `qwen3:4b` (`359d7dd4bcda`), and Laya 0.4.2 from Git commit `68804629e8ccd9d616d48a40e87de9fabbeae069`. Laya's English checkpoint revision was `7b928d828b7b0e022f929d9bd2e44165aa270148`, running on MPS. The pinned Python environment is [requirements-live.txt](../integrations/laya/requirements-live.txt). These versions were tested on this host; hardware and platform support still depend on the upstream runtimes.
 
+## Released executables
+
+The v0.2.0 release is tagged at `c4c997e748655bfa9b615b3d3eb17ea9952cff40`. All 14 native/npm/plugin artifacts were downloaded and checked against the release's `checksums.txt`. The exact release npm tarballs installed offline, reported the release commit, and completed a real MCP stdio handshake with 26 read-only tools. The downloaded native executable also passed the complete three-step Qwen/Laya loop, dry-run and one fixture update described below. This checks package bootstrap and transport independently of model prose. The source archive has its own Homebrew checksum. The tap's source build and formula tests passed in CI and on the tested macOS arm64 host; the installed version is `0.2.0`.
+
+To repeat with the released macOS arm64 executable instead of a development build:
+
+```sh
+gh release download v0.2.0 --repo KingPsychopath/raindrop-cli \
+  --dir .artifacts/release-v0.2.0 --clobber
+(cd .artifacts/release-v0.2.0 && shasum -a 256 -c checksums.txt)
+tar -xzf .artifacts/release-v0.2.0/rdrop_0.2.0_macos_arm64.tar.gz \
+  -C .artifacts/release-v0.2.0
+.artifacts/release-v0.2.0/rdrop_0.2.0_macos_arm64/rdrop version
+
+# Start the model servers below first.
+HF_HOME="$PWD/.artifacts/hf" \
+LAYA_REVISION=7b928d828b7b0e022f929d9bd2e44165aa270148 \
+python3 scripts/verify-models.py \
+  --binary .artifacts/release-v0.2.0/rdrop_0.2.0_macos_arm64/rdrop \
+  --output .artifacts/e2e/release-models \
+  --command-python .venv-models/bin/python
+
+brew test KingPsychopath/tap/rdrop
+```
+
+Choose the matching native archive on other platforms. npm uses exact release tarballs and verifies each packaged executable before running it; registry publication additionally requires npm account 2FA or an eligible granular publishing token. [Distribution and publishing commands](PACKAGING.md).
+
 ## Start the actual local models
 
 From the checkout:

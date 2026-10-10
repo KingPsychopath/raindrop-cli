@@ -1,8 +1,8 @@
 class Rdrop < Formula
-  desc "Raindrop CLI, MCP tools and model-driven organizing"
+  desc "Find, review and organize Raindrop bookmarks from a shell or agent"
   homepage "https://github.com/KingPsychopath/raindrop-cli"
-  url "https://github.com/KingPsychopath/raindrop-cli/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "b53eff457c3c72cdfa553bd052fdad2ca74806798e75e5bd1369defac01b3457"
+  url "https://github.com/KingPsychopath/raindrop-cli/archive/refs/tags/v0.2.0.tar.gz"
+  sha256 "2be3fe887073288141ddc185fa7f639bea143b2275d5f1650c10b0f164130818"
   license "MIT"
   head "https://github.com/KingPsychopath/raindrop-cli.git", branch: "main"
 
