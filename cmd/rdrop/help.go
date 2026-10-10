@@ -28,9 +28,9 @@ Shows system collection counts and account metadata.
 `,
 	"collections": `
 Usage:
-  rdrop collections [--children] [--json]
+  rdrop collections [--children|--tree] [--json]
 
-Lists root collections. Use --children for nested collections.
+Lists root collections. --children reads nested collections; --tree combines both into full paths.
 `,
 	"collection": `
 Usage:
@@ -101,6 +101,8 @@ Shows counts for broken links, duplicates, untagged items, favorites, tags, and 
 	"cleanup": `
 Usage:
   rdrop cleanup report [--collection id] [--search query] [--json]
+  rdrop cleanup plan --action tag|move|delete --collection id --ids id,id [--tags a,b] [--to id]
+  rdrop cleanup apply plan.json --dry-run|--yes
 
 Builds a safe cleanup report without mutating anything. The report highlights broken links, duplicates, untagged items, and tag normalization candidates.
 `,
@@ -146,12 +148,12 @@ Moves one raindrop to Trash. Deleting from Trash can remove permanently.
 `,
 	"batch": `
 Usage:
-  rdrop batch tag --ids 1,2 --tags go,docs [--collection id]
-  rdrop batch move --ids 1,2 --to collectionID [--collection id]
-  rdrop batch delete --ids 1,2 [--collection id] --dry-run|--yes
-  rdrop batch delete --search "notag:true" [--collection id] --dry-run|--yes
+  rdrop batch tag --collection id --ids 1,2 --tags go,docs [--dry-run]
+  rdrop batch move --collection id --ids 1,2 --to collectionID [--dry-run]
+  rdrop batch delete --collection id --ids 1,2 --dry-run|--yes
+  rdrop batch delete --collection id --search "notag:true" --dry-run|--yes
 
-Bulk operations. Tag and move require explicit IDs. Delete requires --dry-run or --yes.
+Bulk operations require an explicit source collection (positive ID, -1 Unsorted or -99 Trash). Collection 0 is read-only. Tag/move require exact IDs (1..100); --dry-run emits snapshot plans. Delete requires --dry-run or --yes. A search delete preview is a dynamic count, not a saved snapshot plan; matches may change. Prefer cleanup plan/apply for reviewed changes.
 `,
 	"completion": `
 Usage:
@@ -193,17 +195,17 @@ Manages collection sharing and collaborators.
 	"backups": `
 Usage:
   rdrop backups
-  rdrop backup create
+  rdrop backup create [--json]
   rdrop backup download <backup-id> --format csv|html > backup.csv
 
 Lists, creates, or downloads Raindrop backups.
 `,
 	"backup": `
 Usage:
-  rdrop backup create
+  rdrop backup create [--json]
   rdrop backup download <backup-id> --format csv|html > backup.csv
 
-Creates or downloads backups.
+Creates or downloads backups. Creation queues an export and Raindrop emails the account owner when ready. --json returns queued status and the provider message.
 `,
 	"suggest": `
 Usage:
@@ -216,5 +218,90 @@ Usage:
   rdrop raw METHOD PATH [json-body]
 
 Calls a JSON REST endpoint directly. Use first-class commands for multipart upload endpoints.
+`,
+	"config": `
+Usage:
+  rdrop config paths
+  rdrop config show
+
+Shows token file lookup paths or redacted configuration. No token required.
+`,
+	"mcp": `
+Usage:
+  rdrop mcp serve [--allow-write]
+  rdrop mcp tools [--allow-write]
+
+Runs an MCP stdio server, read-only by default. Discovery is offline JSON.
+--allow-write exposes mutations; confirm:true is caller intent, not human approval.
+The host must enforce authorization. Stdout is reserved for protocol messages.
+`,
+	"connect": `
+Usage:
+  rdrop connect mcp [--command /absolute/path/rdrop] [--allow-write]
+  rdrop connect acp [--cwd /absolute/path] [--command /absolute/path/rdrop] [--allow-write]
+  rdrop connect raindrop [--url https://api.raindrop.io/rest/v2/ai/mcp]
+  rdrop connect executor [--url http://127.0.0.1:4312/mcp]
+
+Prints configuration without tokens. ACP output is session/new params for an
+existing ACP agent supporting MCP, not a standalone ACP agent implementation.
+Use the remote service's auth and permission settings for HTTP connections.
+`,
+	"context": `
+Usage:
+  rdrop context [--ids id,id | --collection id --search query --page n] [--per-page 25] [--policy policy.json] [--model-view]
+
+Exports account-bound context: exact tags, collection paths, naming rules and
+up to 50 selected bookmarks. Default is one page of 25. Full context retains
+private notes in snapshots for later stale checks; keep the file private.
+--model-view omits notes and snapshots; retain the original for organize plan.
+Policy allowNewTags defaults false. Extra names must be declared in tagRules.
+`,
+	"organize": `
+Usage:
+  rdrop organize plan --context library-context.json --proposal proposal.json
+
+Validates provider-neutral multi-tag/move suggestions offline. Outputs plan,
+needsReview, unchanged and unmentioned IDs. No token required. Use the original
+context digest. Unknown names, IDs, destinations and duplicate entries fail.
+Extract .plan, review, then use cleanup apply --dry-run and --yes.
+`,
+	"classify": `
+Usage:
+  rdrop classify --ids id,id --taxonomy taxonomy.json [--min-confidence 0.8] [--min-probability 0.8] [--json]
+
+Read-only fixed-choice classification of 1..25 bookmarks. Taxonomy is a JSON
+object of category names and descriptions. needs_review is reserved.
+Configure RDROP_DECISION_PROVIDER=systemone (default) or command.
+HTTP: RDROP_DECISION_BASE_URL, RDROP_DECISION_API_KEY, RDROP_DECISION_MODEL.
+Defaults to Jev; TYPESAFE_* variables remain supported. Loopback needs no key.
+Command: RDROP_DECISION_COMMAND and optional RDROP_DECISION_ARGS JSON array.
+Metadata sent: ID, title, link, excerpt, tags. Private notes are omitted.
+Scores are provider-specific; calibrate thresholds using reviewed examples.
+`,
+	"agent": `
+Usage:
+  rdrop agent --model model [--base-url url] [--api responses|chat] [--json] <task>
+  rdrop agent --model model --allow-write [flags] <task>
+
+Runs a bounded model/tool loop. Starts with cleanup report and one page of
+context. Read-only by default; --json captures responses, tool results and exact plans.
+--allow-write authorizes model-selected mutations. Host review is your job.
+RDROP_MODEL, RDROP_MODEL_BASE_URL, RDROP_MODEL_API_KEY configure the provider;
+OPENAI_API_KEY is a fallback. Loopback endpoints may run without a key.
+Limits: --max-steps 12, --max-tool-calls 32, --max-output-tokens 4096,
+--timeout 10m. Responses API is default; --api chat is for compatible gateways.
+`,
+	"version": `
+Usage:
+  rdrop version
+
+Prints version, commit and build date. No token required.
+`,
+	"help": `
+Usage:
+  rdrop help [command]
+  rdrop help --markdown
+
+Shows command reference. Markdown is generated from these same help topics.
 `,
 }

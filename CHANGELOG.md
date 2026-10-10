@@ -8,6 +8,12 @@ This project uses semantic version tags for releases. Dates are in UTC.
 
 ### Added
 
+- Official Go SDK MCP stdio server, structured tool catalog, read-only defaults, prompt/resource and mutation intent checks.
+- Bounded direct-model Responses/Chat tool loop with exact plan capture and optional HTTP/local-command decisions, including Jev and Laya adapters.
+- Provider-neutral library context, existing naming policy, multi-tag/move proposal validation and reviewed account/snapshot-bound apply with partial recovery.
+- ACP session configuration, official Raindrop/Executor MCP connection helpers and a portable Executor app with exact-call host approval.
+- Native npm launcher/platform build and packing scripts, non-root Dockerfile and generated command reference.
+
 - `scripts/render-terminal-demo.go` and `make assets` for regenerating the README terminal SVG.
 - Build metadata injection for `rdrop version`.
 - Install and checksum verification examples in the README.
@@ -16,6 +22,11 @@ This project uses semantic version tags for releases. Dates are in UTC.
 - Live Homebrew tap instructions and packaging notes.
 
 ### Changed
+
+- Split command implementation into focused modules shared with model tools.
+- Use the source-declared Go version in CI/release builds; validate pagination, explicit bulk source collections, structured inputs and extra arguments.
+- Add dry-run tag/move snapshot plans, preserve existing tags on proposal apply, redact diagnostics and block cross-origin credential redirects.
+- Rewrite command, integration, model, organizing and packaging guides for the expanded development source.
 
 - Future macOS release artifacts use `macos` in filenames instead of Go's internal `darwin` target name.
 

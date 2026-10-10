@@ -1,5 +1,5 @@
 class Rdrop < Formula
-  desc "Dependency-light CLI for managing Raindrop.io libraries"
+  desc "Raindrop CLI, MCP tools and model-driven organizing"
   homepage "https://github.com/KingPsychopath/raindrop-cli"
   url "https://github.com/KingPsychopath/raindrop-cli/archive/refs/tags/v0.1.0.tar.gz"
   sha256 "b53eff457c3c72cdfa553bd052fdad2ca74806798e75e5bd1369defac01b3457"

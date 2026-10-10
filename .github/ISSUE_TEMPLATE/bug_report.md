@@ -22,7 +22,7 @@ What did you expect to happen?
 
 ## Output
 
-Paste relevant output. Remove tokens, private links, and personal export data.
+Paste relevant output. Remove tokens, private links, and personal export data, snapshot notes and sharing tokens.
 
 ```text
 
@@ -32,8 +32,10 @@ Paste relevant output. Remove tokens, private links, and personal export data.
 
 - `rdrop version`:
 - OS:
+- Connection: shell / MCP client / ACP agent / Executor / direct model
+- Model provider and API protocol (if applicable; omit keys):
 - Shell:
-- Install method: release binary / `go install` / local build
+- Install method: release binary / `go install` / local build / npm / Docker
 
 ## Notes
 

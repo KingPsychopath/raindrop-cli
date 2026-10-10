@@ -19,3 +19,19 @@ updates:
       - "go"
     commit-message:
       prefix: "chore"
+
+  - package-ecosystem: "npm"
+    directory: "/integrations/executor"
+    schedule:
+      interval: "weekly"
+    labels: ["dependencies"]
+    commit-message:
+      prefix: "chore"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels: ["dependencies"]
+    commit-message:
+      prefix: "chore"

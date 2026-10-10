@@ -32,6 +32,15 @@ func NewClient(baseURL, token string) *Client {
 		token:   token,
 		httpClient: &http.Client{
 			Timeout: 60 * time.Second,
+			CheckRedirect: func(req *http.Request, via []*http.Request) error {
+				if len(via) >= 10 {
+					return fmt.Errorf("too many redirects")
+				}
+				if req.URL.Scheme != via[0].URL.Scheme || req.URL.Host != via[0].URL.Host {
+					return fmt.Errorf("refusing redirect outside the configured API origin")
+				}
+				return nil
+			},
 		},
 	}
 }
@@ -161,14 +170,44 @@ func (c *Client) send(req *http.Request) ([]byte, string, error) {
 	}
 	defer resp.Body.Close()
 
-	data, err := io.ReadAll(resp.Body)
+	reader := io.Reader(resp.Body)
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		reader = io.LimitReader(resp.Body, 64<<10)
+	}
+	data, err := io.ReadAll(reader)
 	if err != nil {
 		return nil, "", fmt.Errorf("read response: %w", err)
 	}
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		return nil, "", apiError(resp.StatusCode, data)
+		message := apiError(resp.StatusCode, data).Error()
+		if c.token != "" {
+			message = strings.ReplaceAll(message, c.token, "[redacted]")
+		}
+		return nil, "", &APIError{StatusCode: resp.StatusCode, RetryAfter: resp.Header.Get("Retry-After"), Message: message}
+	}
+	// Raindrop sometimes reports a failed operation in a successful HTTP envelope.
+	if strings.Contains(resp.Header.Get("Content-Type"), "json") || bytes.HasPrefix(bytes.TrimSpace(data), []byte("{")) {
+		var envelope struct {
+			Result *bool `json:"result"`
+		}
+		if json.Unmarshal(data, &envelope) == nil && envelope.Result != nil && !*envelope.Result {
+			return nil, "", fmt.Errorf("raindrop API reported result:false (HTTP %d)", resp.StatusCode)
+		}
 	}
 	return data, resp.Header.Get("Content-Type"), nil
+}
+
+type APIError struct {
+	StatusCode int
+	RetryAfter string
+	Message    string
+}
+
+func (e *APIError) Error() string {
+	if e.StatusCode == http.StatusTooManyRequests && e.RetryAfter != "" {
+		return e.Message + "; retry after " + e.RetryAfter
+	}
+	return e.Message
 }
 
 func apiError(status int, data []byte) error {
@@ -177,9 +216,16 @@ func apiError(status int, data []byte) error {
 		ErrorMessage string `json:"errorMessage"`
 	}
 	if err := json.Unmarshal(data, &payload); err == nil && payload.ErrorMessage != "" {
-		return fmt.Errorf("raindrop api status %d: %s", status, payload.ErrorMessage)
+		message := payload.ErrorMessage
+		if len(message) > 2048 {
+			message = message[:2048] + "…"
+		}
+		return fmt.Errorf("raindrop api status %d: %s", status, message)
 	}
 	body := strings.TrimSpace(string(data))
+	if len(body) > 2048 {
+		body = body[:2048] + "…"
+	}
 	if body == "" {
 		body = http.StatusText(status)
 	}

@@ -1,49 +1,20 @@
 # Contributing
 
-Thanks for helping make `raindrop-cli` useful and boring in the best way.
+Build with the Go version in `go.mod`. Start behavior changes with focused package tests and finish with `make check`. Use fixtures for API and model transport; live checks need a disposable library and deliberate authorization.
 
-## Setup
-
-```bash
-git clone https://github.com/KingPsychopath/raindrop-cli.git
-cd raindrop-cli
-go test ./...
-make build
+```sh
+make check
+make check-integrations
 ```
 
-For live API testing:
+Integration checks require Node 22.18+ (native TypeScript loading in adapter tests), npm and Python 3.10+. Run `npm ci --prefix integrations/executor` first. Laya adapter tests use a fake import and never download checkpoints. MCP tests use a real stdio client/server handshake. Model fixtures check the complete function-call/result round trip, bounds and rejection paths.
 
-```bash
-export RAINDROP_TOKEN=your_token_here
-./bin/rdrop doctor
-```
+Keep the REST client, model transport and planning code in the standard library. The official MCP SDK and JSON Schema validator are justified protocol dependencies; avoid new dependencies that merely shorten a small helper. New API commands should follow stable official Raindrop endpoints and keep `raw` for JSON parity gaps.
 
-## Pull Request Checklist
+The command modules in `cmd/rdrop` are shared by CLI dispatch and the structured catalog. Update `protocol_catalog.go` for tool exposure, and give writes explicit intent and appropriate annotations. Do not expose raw requests, arbitrary executable selection or local file reads through model tools. Host authorization is separate from `confirm:true`.
 
-- Keep command names clear and consistent with existing verbs.
-- Add or update tests for parsing, client behavior, or command behavior when possible.
-- Update `README.md` and `docs/API_COVERAGE.md` when adding a first-class command.
-- Run `make check`.
-- Do not include personal exports, tokens, or generated binaries.
-- Keep bulk destructive workflows explicit with `--dry-run`, `--yes`, or ID-based inputs.
-- Update `CHANGELOG.md` for user-visible changes.
+Preserve scriptable output: TSV for list defaults, JSON for structured data, bytes for transfers. Bulk changes need explicit scope, preview and visible apply. Test independent invariants such as stale rejection, all prechecks before writes, tag preservation, partial recovery and real protocol boundaries; avoid tests that just repeat the implementation.
 
-## CLI Design
+Update help topics and run `make docs` after command changes. `make check` compares the generated command reference to the saved file. Update README, coverage, organizing/integration/model docs and changelog when behavior changes. Do not commit private contexts, plans, tokens, exports, model weights, node_modules or generated binaries.
 
-- Human output should be compact and pipeline-friendly.
-- Machine output should use `--json`.
-- Commands that emit file formats, such as `export`, write the payload to stdout so users can redirect or pipe it.
-- Dangerous bulk operations should require targeted inputs such as `--ids`, `--search`, or a collection ID.
-
-## Releases
-
-Maintainers publish releases by pushing a semantic version tag:
-
-```bash
-git tag v0.1.0
-git push origin v0.1.0
-```
-
-The release workflow builds Linux, macOS, and Windows archives for amd64 and arm64.
-
-Release builds inject `rdrop version` metadata with linker flags.
+CI covers Go checks and race tests, platform tests, optional adapters, native npm installation and container smoke checks. Check actual CI results before claiming a release is ready. [Packaging](docs/PACKAGING.md) describes deliberate tag-based GitHub releases and separate npm/container publication; a build does not authorize publishing a new namespace or hosted app.

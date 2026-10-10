@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Raindrop organization proposal v1",
+  "additionalProperties": false,
+  "properties": {
+    "contextDigest": {
+      "type": "string"
+    },
+    "suggestions": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "collectionId": {
+            "type": "integer"
+          },
+          "id": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "needsReview": {
+            "type": "boolean"
+          },
+          "reason": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "id",
+          "reason",
+          "needsReview"
+        ],
+        "type": "object"
+      },
+      "maxItems": 50,
+      "type": "array"
+    }
+  },
+  "required": [
+    "contextDigest",
+    "suggestions"
+  ],
+  "type": "object"
+}

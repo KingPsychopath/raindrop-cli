@@ -51,5 +51,8 @@ func JSONObject(value string) (map[string]any, error) {
 	if err := json.Unmarshal([]byte(value), &out); err != nil {
 		return nil, fmt.Errorf("invalid JSON object: %w", err)
 	}
+	if out == nil {
+		return nil, fmt.Errorf("invalid JSON object: null is not an object")
+	}
 	return out, nil
 }
