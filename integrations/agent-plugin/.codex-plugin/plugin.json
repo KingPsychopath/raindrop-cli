@@ -1,7 +1,7 @@
 {
   "name": "raindrop",
-  "version": "0.2.0",
-  "description": "Find and organize your Raindrop library with reviewed plans.",
+  "version": "0.2.1",
+  "description": "rdrop for Raindrop.io: find links and organize your library with reviewed plans.",
   "author": {
     "name": "Machineyearn"
   },
@@ -9,11 +9,21 @@
   "repository": "https://github.com/KingPsychopath/raindrop-cli",
   "license": "MIT",
   "keywords": [
+    "rdrop",
     "raindrop",
+    "raindrop-io",
     "bookmarks",
     "organization",
-    "mcp"
+    "mcp",
+    "claude-code",
+    "codex"
   ],
   "skills": "./skills/",
-  "mcpServers": "./.mcp.json"
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "rdrop for Raindrop.io",
+    "shortDescription": "Find links and organize your library with reviewed plans",
+    "developerName": "Machineyearn",
+    "category": "Productivity"
+  }
 }

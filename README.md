@@ -1,4 +1,4 @@
-# raindrop-cli
+# rdrop for Raindrop.io
 
 **Find, review and organize your saved links. Keep your tags. Bring your own AI.**
 
@@ -10,6 +10,8 @@
 [![Go version](https://img.shields.io/github/go-mod/go-version/KingPsychopath/raindrop-cli)](go.mod)
 
 Turn a growing [Raindrop.io](https://raindrop.io) library into something easier to use. Search saved links, inspect collections, find cleanup opportunities and review suggestions before making changes. Use it from your terminal or let your favorite agent do the reading and planning.
+
+A Raindrop.io CLI, MCP server and reviewed bookmark organizer from **Machineyearn**, built as an independent integration.
 
 - **Your organization stays yours.** Start with the tags and collections you already created; preserve existing tags when applying a plan.
 - **Changes you can inspect.** See exact bookmarks, proposed tags and destinations, then dry-run the plan before applying it.
@@ -25,11 +27,11 @@ Turn a growing [Raindrop.io](https://raindrop.io) library into something easier 
 ```sh
 brew install KingPsychopath/tap/rdrop
 # Or Node 22+, with optional dependencies enabled:
-npm install --global @machineyearn/raindrop-cli@0.2.0
+npm install --global @machineyearn/raindrop-cli@0.2.1
 rdrop version
 ```
 
-Prefer no global install? Use `npx --yes @machineyearn/raindrop-cli@0.2.0 COMMAND`. [Native downloads](https://github.com/KingPsychopath/raindrop-cli/releases/latest) cover macOS, Linux and Windows on Intel/AMD and ARM. [Builds and checksums](docs/PACKAGING.md).
+Prefer no global install? Use `npx --yes @machineyearn/raindrop-cli@0.2.1 COMMAND`. [Native downloads](https://github.com/KingPsychopath/raindrop-cli/releases/latest) cover macOS, Linux and Windows on Intel/AMD and ARM. [Builds and checksums](docs/PACKAGING.md).
 
 ### 2. Connect Raindrop
 
@@ -126,6 +128,8 @@ A real Qwen/Laya loop classified bookmarks, generated a plan and applied it to a
 The product focuses on Raindrop. Model providers and proposal formats are agnostic; Obsidian and other note sources remain [future options](docs/ROADMAP.md).
 
 ## For developers
+
+The public name is **rdrop for Raindrop.io**. Stable technical identifiers are the `raindrop-cli` repository, `@machineyearn/raindrop-cli` npm package, `rdrop` command and `raindrop@machineyearn` plugin. Storage support currently focuses on Raindrop.io; model and agent connections are provider-neutral.
 
 A native Go CLI, local MCP server and direct model loop share the command implementation. The REST client, model clients and planning code use the standard library; MCP uses the official Go SDK. ACP configuration supplies this server to an existing ACP agent. Executor offers a smaller portable REST adapter. Docker is available as a packaging option.
 

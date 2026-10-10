@@ -7,9 +7,9 @@
     {
       "name": "raindrop",
       "source": "./integrations/agent-plugin",
-      "description": "Find and organize your Raindrop library with reviewed plans.",
-      "version": "0.2.0"
+      "description": "rdrop for Raindrop.io: find links and organize your library with reviewed plans.",
+      "version": "0.2.1"
     }
   ],
-  "description": "Raindrop library tools and reviewed organizing workflows from Machineyearn."
+  "description": "rdrop for Raindrop.io and reviewed bookmark organizing workflows from Machineyearn."
 }

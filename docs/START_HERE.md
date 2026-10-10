@@ -1,4 +1,4 @@
-# Start here
+# Get started with rdrop for Raindrop.io
 
 Install `rdrop`, connect your Raindrop account, then use your shell or agent. An existing Codex/Claude agent already supplies the model: you do not need another AI account, Laya, Executor or ACP to get started.
 
@@ -9,11 +9,11 @@ Choose one:
 ```sh
 brew install KingPsychopath/tap/rdrop
 # Or Node 22+, with optional dependencies enabled:
-npm install --global @machineyearn/raindrop-cli@0.2.0
+npm install --global @machineyearn/raindrop-cli@0.2.1
 rdrop version
 ```
 
-Without a global npm install, replace `rdrop` in the commands below with `npx --yes @machineyearn/raindrop-cli@0.2.0`. [Native downloads, source builds and checksums](PACKAGING.md).
+Without a global npm install, replace `rdrop` in the commands below with `npx --yes @machineyearn/raindrop-cli@0.2.1`. [Native downloads, source builds and checksums](PACKAGING.md).
 
 ## 2. Connect Raindrop
 
@@ -68,6 +68,6 @@ These are optional routes. Keep the first setup small, then choose a provider or
 
 - **Command not found:** restart the terminal, check the npm/Homebrew bin directory is on PATH, or use `npx`. GUI agents may need an absolute executable path.
 - **Missing token or HTTP 401:** inspect `rdrop config paths` and `rdrop config show`, then replace the token in the private file. Do not paste it into chat.
-- **Missing npm platform package:** reinstall with `npm install --global --include=optional @machineyearn/raindrop-cli@0.2.0`, or use a native archive.
+- **Missing npm platform package:** reinstall with `npm install --global --include=optional @machineyearn/raindrop-cli@0.2.1`, or use a native archive.
 - **No agent tools:** reload/start a new client session and check its MCP connection. Browser-only clients require a hosted HTTP service; this local server uses stdio.
 - **Official/model provider unavailable:** check that provider's configuration and account limits. The shell CLI and normal REST reads do not depend on that provider.

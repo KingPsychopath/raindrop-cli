@@ -1,15 +1,17 @@
 # Connect your agent
 
-Use the native `rdrop` executable or the pinned npm launcher from a local MCP client. The server starts read-only, reads the normal private CLI configuration, and keeps stdout reserved for MCP messages. New here? Follow [three-step setup and the copyable agent prompt](START_HERE.md) first.
+Connect **rdrop for Raindrop.io** using the native `rdrop` executable or the pinned npm launcher from a local MCP client. The server starts read-only, reads the normal private CLI configuration, and keeps stdout reserved for MCP messages. New here? Follow [three-step setup and the copyable agent prompt](START_HERE.md) first.
 
 ## Codex and Claude plugins
+
+The plugin displays as **rdrop for Raindrop.io** and keeps the stable installation identifier `raindrop@machineyearn` and skill command `/raindrop:organize`. This independent integration is maintained by Machineyearn.
 
 The shared package in [integrations/agent-plugin](../integrations/agent-plugin) includes a portable Agent Plugins manifest, Codex/Claude compatibility manifests, a read-only MCP connection and one organizing skill. The skill teaches tool discovery, existing-tag preservation, bounded context, uncertainty review and exact-plan apply. It does not enable mutation tools or configure credentials.
 
 For Codex:
 
 ```sh
-codex plugin marketplace add KingPsychopath/raindrop-cli --ref v0.2.0
+codex plugin marketplace add KingPsychopath/raindrop-cli --ref v0.2.1
 codex plugin add raindrop@machineyearn
 ```
 
@@ -24,9 +26,11 @@ For Claude Code, run these inside Claude:
 
 Invoke `/raindrop:organize` or ask it to organize your Raindrop library. For local development, use `claude --plugin-dir ./integrations/agent-plugin`. The manifests and marketplace were checked with `claude plugin validate`; this is package validation, not proof of every client's UI workflow. See [Claude's plugin reference](https://code.claude.com/docs/en/plugins-reference).
 
-The MCP command is pinned to `@machineyearn/raindrop-cli@0.2.0`. Updating the plugin does not automatically authorize writes. Keep Node 22+ and optional npm dependencies enabled. Configure the token through the private CLI env/token file and run `rdrop doctor` before starting the client.
+The MCP command is pinned to `@machineyearn/raindrop-cli@0.2.1`. Updating the plugin does not automatically authorize writes. Keep Node 22+ and optional npm dependencies enabled. Configure the token through the private CLI env/token file and run `rdrop doctor` before starting the client.
 
 ## Direct stdio configuration
+
+The MCP Registry entry is [`io.github.KingPsychopath/raindrop-cli`](https://registry.modelcontextprotocol.io/?q=io.github.KingPsychopath%2Fraindrop-cli), displayed as **rdrop for Raindrop.io**. It describes the pinned npm command, `mcp serve` arguments and private token setup. Registry discovery is separate from a client's plugin directory and does not provision an account or enable writes. [Registry metadata and publishing](PACKAGING.md#mcp-registry).
 
 For clients using `mcpServers`, including Claude Desktop and Cursor, add:
 
@@ -35,7 +39,7 @@ For clients using `mcpServers`, including Claude Desktop and Cursor, add:
   "mcpServers": {
     "raindrop": {
       "command": "npx",
-      "args": ["--yes", "@machineyearn/raindrop-cli@0.2.0", "mcp", "serve"]
+      "args": ["--yes", "@machineyearn/raindrop-cli@0.2.1", "mcp", "serve"]
     }
   }
 }

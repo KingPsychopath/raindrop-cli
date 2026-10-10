@@ -1,6 +1,6 @@
 # Current scope and remaining work
 
-## v0.2.0 scope
+## Current scope (v0.2.1)
 
 - Native Go CLI with stable REST commands, tree paths, sanitized TSV and JSON/byte pipelines.
 - Local MCP stdio server using the official Go SDK, read-only defaults, validated inputs, organizing prompt/resource and explicit mutation exposure.
@@ -13,6 +13,7 @@
 - Executor portable REST app with real exact-call host approval, checked against an exact framework version.
 - Six native release targets, npm platform packages/launcher under `@machineyearn`, checksums and a non-root container.
 - Command reference generated from CLI help; source Go version used in CI.
+- Public identity **rdrop for Raindrop.io**, stable technical names, shared agent plugins, and npm-backed MCP Registry discovery with verified release bytes and short-lived publishing identity.
 
 ## Runtime evidence
 

@@ -9,25 +9,25 @@ The v0.2.0 release is tagged at `c4c997e748655bfa9b615b3d3eb17ea9952cff40`. All 
 To repeat with the released macOS arm64 executable instead of a development build:
 
 ```sh
-gh release download v0.2.0 --repo KingPsychopath/raindrop-cli \
-  --dir .artifacts/release-v0.2.0 --clobber
-(cd .artifacts/release-v0.2.0 && shasum -a 256 -c checksums.txt)
-tar -xzf .artifacts/release-v0.2.0/rdrop_0.2.0_macos_arm64.tar.gz \
-  -C .artifacts/release-v0.2.0
-.artifacts/release-v0.2.0/rdrop_0.2.0_macos_arm64/rdrop version
+gh release download v0.2.1 --repo KingPsychopath/raindrop-cli \
+  --dir .artifacts/release-v0.2.1 --clobber
+(cd .artifacts/release-v0.2.1 && shasum -a 256 -c checksums.txt)
+tar -xzf .artifacts/release-v0.2.1/rdrop_0.2.1_macos_arm64.tar.gz \
+  -C .artifacts/release-v0.2.1
+.artifacts/release-v0.2.1/rdrop_0.2.1_macos_arm64/rdrop version
 
 # Start the model servers below first.
 HF_HOME="$PWD/.artifacts/hf" \
 LAYA_REVISION=7b928d828b7b0e022f929d9bd2e44165aa270148 \
 python3 scripts/verify-models.py \
-  --binary .artifacts/release-v0.2.0/rdrop_0.2.0_macos_arm64/rdrop \
+  --binary .artifacts/release-v0.2.1/rdrop_0.2.1_macos_arm64/rdrop \
   --output .artifacts/e2e/release-models \
   --command-python .venv-models/bin/python
 
 brew test KingPsychopath/tap/rdrop
 ```
 
-Choose the matching native archive on other platforms. npm uses exact release tarballs and verifies each packaged executable before running it. The documented `npx --yes @machineyearn/raindrop-cli@0.2.0 version` command passed after registry publication. Publishing requires npm account 2FA or an eligible granular publishing token. [Distribution and publishing commands](PACKAGING.md).
+Choose the matching native archive on other platforms. npm uses exact release tarballs and verifies each packaged executable before running it. Check the published version with `npx --yes @machineyearn/raindrop-cli@0.2.1 version`. Publishing requires npm account 2FA or an eligible granular publishing token. [Distribution and publishing commands](PACKAGING.md).
 
 ## Start the actual local models
 

@@ -90,5 +90,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "${GITHUB_REF_NAME}" dist/*.tar.gz dist/*.zip dist/*.tgz dist/checksums.txt \
-            --title "raindrop-cli ${GITHUB_REF_NAME}" \
+            --title "rdrop for Raindrop.io ${GITHUB_REF_NAME}" \
             --generate-notes

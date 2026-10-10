@@ -5,7 +5,7 @@
       "command": "npx",
       "args": [
         "--yes",
-        "@machineyearn/raindrop-cli@0.2.0",
+        "@machineyearn/raindrop-cli@0.2.1",
         "mcp",
         "serve"
       ]
