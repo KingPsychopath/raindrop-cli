@@ -59,6 +59,18 @@ func (a *app) run(ctx context.Context, args []string) error {
 		fmt.Fprintln(a.out, versionString())
 		return nil
 	}
+	for i, arg := range args[1:] {
+		if isHelpArg(arg) {
+			return a.help(args[:i+1])
+		}
+		if strings.HasPrefix(arg, "-") {
+			break
+		}
+	}
+	if len(args) > 1 && isHelpArg(args[1]) {
+		return a.help([]string{args[0]})
+	}
+
 	if args[0] == "completion" {
 		return a.completion(args[1:])
 	}
@@ -78,17 +90,6 @@ func (a *app) run(ctx context.Context, args []string) error {
 	}
 	if args[0] == "mcp" {
 		return a.mcp(ctx, args[1:])
-	}
-	for i, arg := range args[1:] {
-		if isHelpArg(arg) {
-			return a.help(args[:i+1])
-		}
-		if strings.HasPrefix(arg, "-") {
-			break
-		}
-	}
-	if len(args) > 1 && isHelpArg(args[1]) {
-		return a.help([]string{args[0]})
 	}
 
 	if a.api == nil {

@@ -88,7 +88,7 @@ func TestToolWritesAndInputCannotBypassBoundaries(t *testing.T) {
 
 func TestTokenlessDiscoveryAndConnectionOutputs(t *testing.T) {
 	t.Setenv("RAINDROP_TOKEN", "")
-	for _, args := range [][]string{{"mcp", "tools"}, {"connect", "mcp"}, {"connect", "acp"}, {"connect", "executor"}, {"config", "paths"}, {"help", "cleanup"}} {
+	for _, args := range [][]string{{"mcp", "tools"}, {"mcp", "serve", "--help"}, {"connect", "acp", "--help"}, {"config", "show", "--help"}, {"organize", "plan", "--help"}, {"connect", "mcp"}, {"connect", "acp"}, {"connect", "executor"}, {"config", "paths"}, {"help", "cleanup"}} {
 		var out bytes.Buffer
 		if err := (&app{out: &out, err: &out}).run(context.Background(), args); err != nil {
 			t.Fatalf("%v: %v", args, err)
