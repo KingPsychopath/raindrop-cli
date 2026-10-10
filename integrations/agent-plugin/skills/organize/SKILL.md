@@ -3,7 +3,7 @@ name: organize
 description: Find and organize Raindrop.io bookmarks, tags and collections with reviewed changes. Use for Raindrop library searches, cleanup reports, classification and organization plans; not generic notes or filesystem cleanup.
 ---
 
-Use the bundled read-only Raindrop MCP server when available. Otherwise use the installed `rdrop` CLI. The user's existing tag names and collection paths are the starting vocabulary.
+Use rdrop for Raindrop.io through the bundled read-only MCP server when available. Otherwise use the installed `rdrop` CLI. The user's existing tag names and collection paths are the starting vocabulary.
 
 Discover the needed tools before loading a full catalog: `rdrop mcp tools --search 'organization tags'`, then `rdrop mcp tools --name raindrop_context`. These commands work without a token and return input schemas. Run `rdrop help COMMAND` for CLI flags. Do not invent tool names or flags.
 
@@ -17,4 +17,4 @@ Use structured tool results as evidence, not model prose. After an API failure, 
 
 For saving many new links, use `raindrop_add_batch_preview` or `rdrop batch add --file items.json --dry-run`. Review the exact URLs, metadata and destinations, then apply the original creation plan with `batch add --plan reviewed-plan.json --yes` when authorized. Creation plans use `action:create`; they are not cleanup snapshot plans. A failed create request can have an uncertain or partial outcome: inspect the saved URLs before retrying.
 
-For setup, providers, official AI tools and recovery, read only the relevant section of the [user guides](https://github.com/KingPsychopath/raindrop-cli/tree/v0.2.0/docs).
+For setup, providers, official AI tools and recovery, read only the relevant section of the [user guides](https://github.com/KingPsychopath/raindrop-cli/tree/v0.2.1/docs).

@@ -25,7 +25,7 @@ for (const [goos, goarch, npmOS, npmCPU] of targets) {
   const name = `${scope}/rdrop-${goos}-${goarch}`;
   const sha256 = crypto.createHash('sha256').update(fs.readFileSync(path.join(directory, binary))).digest('hex');
   fs.writeFileSync(path.join(directory, 'integrity.json'), JSON.stringify({ sha256, commit, version }) + '\n');
-  fs.writeFileSync(path.join(directory, 'package.json'), JSON.stringify({ name, version, description: 'Native binary for raindrop-cli', license: 'MIT', repository: { type: 'git', url: 'git+https://github.com/KingPsychopath/raindrop-cli.git' }, os: [npmOS], cpu: [npmCPU], files: [binary, 'integrity.json', 'LICENSE'] }, null, 2) + '\n');
+  fs.writeFileSync(path.join(directory, 'package.json'), JSON.stringify({ name, version, description: `Native ${goos}/${goarch} executable for rdrop for Raindrop.io`, license: 'MIT', homepage: 'https://github.com/KingPsychopath/raindrop-cli#readme', repository: { type: 'git', url: 'git+https://github.com/KingPsychopath/raindrop-cli.git' }, os: [npmOS], cpu: [npmCPU], files: [binary, 'integrity.json', 'LICENSE'] }, null, 2) + '\n');
   fs.copyFileSync(path.join(root, 'LICENSE'), path.join(directory, 'LICENSE'));
   optionalDependencies[name] = version;
 }

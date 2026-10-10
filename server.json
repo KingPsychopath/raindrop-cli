@@ -1,0 +1,36 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.KingPsychopath/raindrop-cli",
+  "title": "rdrop for Raindrop.io",
+  "description": "Search Raindrop.io bookmarks and review tag and collection plans. Read-only MCP by default.",
+  "repository": {
+    "url": "https://github.com/KingPsychopath/raindrop-cli",
+    "source": "github"
+  },
+  "websiteUrl": "https://github.com/KingPsychopath/raindrop-cli/blob/main/docs/START_HERE.md",
+  "version": "0.2.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@machineyearn/raindrop-cli",
+      "version": "0.2.1",
+      "runtimeHint": "npx",
+      "runtimeArguments": [{ "type": "named", "name": "--yes" }],
+      "packageArguments": [
+        { "type": "positional", "value": "mcp" },
+        { "type": "positional", "value": "serve" }
+      ],
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "RAINDROP_TOKEN",
+          "description": "Raindrop.io API token. Alternatively configure the private rdrop env/token file; see setup.",
+          "isRequired": false,
+          "isSecret": true,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}
