@@ -1,0 +1,11 @@
+{
+  "name": "@kingpsychopath/raindrop-cli",
+  "version": "0.0.0-development",
+  "private": true,
+  "description": "Raindrop CLI and MCP server, backed by a native Go binary",
+  "license": "MIT",
+  "bin": { "rdrop": "launcher.cjs" },
+  "engines": { "node": ">=22" },
+  "repository": { "type": "git", "url": "git+https://github.com/KingPsychopath/raindrop-cli.git" },
+  "files": ["launcher.cjs", "README.md", "LICENSE"]
+}

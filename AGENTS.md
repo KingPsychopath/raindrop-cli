@@ -4,7 +4,7 @@ Guidance for AI coding agents and human contributors working in this repository.
 
 ## Project Intent
 
-`raindrop-cli` is a small, dependency-light Go CLI for managing Raindrop.io libraries at scale. It should stay easy to audit, easy to package, and friendly to shell pipelines.
+`raindrop-cli` is a dependency-light Go CLI, MCP server and model-driven organizer for managing Raindrop.io libraries at scale. It should stay easy to audit, easy to package, and friendly to shell pipelines.
 
 ## Development Rules
 
@@ -23,7 +23,16 @@ Guidance for AI coding agents and human contributors working in this repository.
 - `internal/raindrop`: REST client and Raindrop API methods.
 - `internal/cli`: parsing and output helpers.
 - `internal/config`: environment and token loading.
+- `internal/organize`: versioned context, proposals, snapshot plans and apply recovery.
+- `internal/ai`: bounded model HTTP/command adapters and tool loops.
+- `cmd/rdrop/protocol_catalog.go`: structured tool schemas sharing command handlers.
+- `integrations`: optional Executor and Laya adapters.
+- `packaging/npm`, `scripts/build-npm.mjs`: launcher and native platform packaging.
 - `docs`: contributor-facing design and API coverage notes.
+
+- Keep model/provider selection outside tool inputs. Context must preserve user tags and collection paths; uncertain suggestions stay out of apply plans.
+- MCP and direct model loops are read-only by default. Host authorization is separate from tool confirmation fields.
+- Regenerate `docs/COMMANDS.md` with `make docs` after changing help.
 
 ## Raindrop API Notes
 

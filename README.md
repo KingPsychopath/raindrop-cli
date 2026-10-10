@@ -1,321 +1,133 @@
 # raindrop-cli
 
-[![CI](https://github.com/KingPsychopath/raindrop-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/KingPsychopath/raindrop-cli/actions/workflows/ci.yml)
-[![Release](https://github.com/KingPsychopath/raindrop-cli/actions/workflows/release.yml/badge.svg)](https://github.com/KingPsychopath/raindrop-cli/actions/workflows/release.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Go Report Card](https://goreportcard.com/badge/github.com/KingPsychopath/raindrop-cli)](https://goreportcard.com/report/github.com/KingPsychopath/raindrop-cli)
+A Go CLI, local MCP server and model-driven organizer for Raindrop.io. Search and manage bookmarks from a shell, connect an existing agent, or run a tool-calling model directly. Keep your own tags and collection structure; export context, review proposals, then apply exact snapshot plans.
 
-`rdrop` is a small Go CLI for managing large [Raindrop.io](https://raindrop.io) bookmark libraries from the terminal.
-
-It is built for people and scripts: tab-separated output by default, JSON when you ask for it, exports written directly to stdout, and explicit guardrails around bulk destructive actions.
-
-![Terminal demo showing rdrop commands](docs/assets/terminal-demo.svg)
-
-## Highlights
-
-- Dependency-light Go binary with no runtime services.
-- First-class commands for bookmarks, collections, tags, highlights, backups, sharing, imports, exports, filters, and cleanup reports.
-- Pipeline-friendly output for shell tools like `cut`, `sort`, `awk`, and `jq`.
-- `--json` on commands where structured output is useful.
-- `rdrop raw` escape hatch for documented REST endpoints that do not yet have a first-class command.
-- Tag and cleanup reports designed for cautious large-library organization.
+The CLI, MCP tools and direct model loop share the same Go command implementation. Optional decision providers include TypeSafe Jev, local Laya, compatible HTTP services and trusted local executables. No model is needed for ordinary commands.
 
 ## Install
 
-Download a prebuilt binary from [GitHub Releases](https://github.com/KingPsychopath/raindrop-cli/releases). Release archives include Linux, macOS, and Windows builds for amd64 and arm64, plus SHA-256 checksums.
+Build the current source with the Go version declared in [go.mod](go.mod):
 
-In Go release names, macOS builds are often labeled `darwin`: `darwin_amd64` is Intel Mac, and `darwin_arm64` is Apple Silicon Mac.
-
-Install a Linux or macOS archive:
-
-```bash
-curl -LO https://github.com/KingPsychopath/raindrop-cli/releases/download/v0.1.0/rdrop_0.1.0_linux_amd64.tar.gz
-tar -xzf rdrop_0.1.0_linux_amd64.tar.gz
-sudo install -m 0755 rdrop_0.1.0_linux_amd64/rdrop /usr/local/bin/rdrop
+```sh
+make install
 rdrop version
 ```
 
-Install a Windows archive from PowerShell:
+Or `make build` and use `./bin/rdrop`. [GitHub releases](https://github.com/KingPsychopath/raindrop-cli/releases) provide native archives; released versions may lag these development docs. See [packaging](docs/PACKAGING.md) for checksums, Homebrew, Docker and the buildable npm launcher. The npm package is prepared for publishing; it is not yet published by this project.
 
-```powershell
-Invoke-WebRequest https://github.com/KingPsychopath/raindrop-cli/releases/download/v0.1.0/rdrop_0.1.0_windows_amd64.zip -OutFile rdrop.zip
-Expand-Archive .\rdrop.zip -DestinationPath .
-.\rdrop_0.1.0_windows_amd64\rdrop.exe version
-```
+## Configure
 
-Verify checksums:
-
-```bash
-curl -LO https://github.com/KingPsychopath/raindrop-cli/releases/download/v0.1.0/checksums.txt
-shasum -a 256 -c checksums.txt --ignore-missing
-```
-
-Or install from source with Go 1.22 or newer:
-
-```bash
-go install github.com/KingPsychopath/raindrop-cli/cmd/rdrop@latest
-```
-
-Install with Homebrew:
-
-```bash
-brew tap KingPsychopath/tap
-brew install rdrop
-```
-
-To build from a local checkout:
-
-```bash
-make build
-./bin/rdrop version
-```
-
-## Authentication
-
-Create a Raindrop.io API token, then set it in your shell:
-
-```bash
-export RAINDROP_TOKEN=your_token_here
-rdrop doctor
-```
-
-`rdrop doctor` verifies that the token works and prints the authenticated account.
-
-You can also store the token in:
-
-```text
-~/.config/openclaw/gateway.env
-```
-
-with:
+Create a test token in your [Raindrop integration settings](https://app.raindrop.io/settings/integrations), then store it in a private env file:
 
 ```text
 RAINDROP_TOKEN=your_token_here
 ```
 
-Optional API overrides:
+Use `$XDG_CONFIG_HOME/rdrop/env` or `~/.config/rdrop/env`, with directory permissions `700` and file permissions `600`. `RAINDROP_TOKEN` in the environment takes precedence. `RAINDROP_TOKEN_FILE` selects a plain token file; `RAINDROP_CONFIG_FILE` selects an env file. The legacy OpenClaw env path remains a fallback. Files are parsed as literals, never sourced as shell code.
 
-```bash
-export RAINDROP_API_BASE_URL=https://api.raindrop.io/rest/v1
-export RAINDROP_MCP_ENDPOINT=https://api.raindrop.io/rest/v2/ai/mcp
-```
-
-## Quick Start
-
-List collections:
-
-```bash
-rdrop collections
-```
-
-Search bookmarks:
-
-```bash
-rdrop search "postgres"
-```
-
-Add a bookmark:
-
-```bash
-rdrop add https://example.com --title Example --tags docs,example --parse
-```
-
-Export to CSV:
-
-```bash
-rdrop export --format csv > raindrop.csv
-```
-
-Use JSON with `jq`:
-
-```bash
-rdrop list --search "postgres" --json | jq '.items[].link'
-```
-
-Install shell completion:
-
-```bash
-rdrop completion bash > ~/.local/share/bash-completion/completions/rdrop
-mkdir -p ~/.zfunc && rdrop completion zsh > ~/.zfunc/_rdrop
-rdrop completion fish > ~/.config/fish/completions/rdrop.fish
-```
-
-For zsh, add `fpath=(~/.zfunc $fpath)` to your shell config if `~/.zfunc` is not already in `fpath`.
-
-## Everyday Workflows
-
-Find things that need attention:
-
-```bash
-rdrop filters
-rdrop untagged
-rdrop duplicates
-rdrop broken
-```
-
-Start a safe cleanup pass:
-
-```bash
-rdrop cleanup report --json > cleanup-report.json
-rdrop cleanup report
-```
-
-Inspect candidates before mutating anything:
-
-```bash
-rdrop untagged --json | jq '.items[] | {id: ._id, title, link}'
-rdrop duplicates --json | jq '.items[] | {id: ._id, title, link}'
-rdrop broken --json | jq '.items[] | {id: ._id, title, link}'
-```
-
-Apply explicit changes:
-
-```bash
-rdrop tag merge "Machine Learning,machine learning" machine-learning
-rdrop batch tag --ids 101,102 --tags needs-review
-rdrop batch move --ids 101,102 --to 98765
-```
-
-Plan a bulk delete before applying it:
-
-```bash
-rdrop batch delete --search "notag:true" --dry-run
-rdrop batch delete --search "notag:true" --yes
-```
-
-## Command Reference
-
-Run:
-
-```bash
-rdrop help
-rdrop help cleanup
-rdrop help batch
-```
-
-Common commands:
-
-```text
+```sh
+rdrop config paths
+rdrop config show        # redacted diagnostics
 rdrop doctor
-rdrop me [--json]
-rdrop stats [--json]
-rdrop collections [--children] [--json]
-rdrop collection create [--parent id] <title>
-rdrop collection update <id> '{"title":"New name"}'
-rdrop collection merge --to 123 --ids 456,789
-rdrop collection empty-trash --yes
-rdrop tags [--collection id] [--json]
-rdrop tag rename old-name new-name
-rdrop tag merge old-name,old-name-2 new-name
-rdrop list [--collection id] [--search query] [--page n] [--per-page n] [--json]
-rdrop search "javascript"
-rdrop get [--json] <id>
-rdrop add [--title text] [--tags a,b] [--collection id] [--parse] <url>
-rdrop update <id> '{"important":true,"tags":["go","docs"]}'
-rdrop delete <id>
-rdrop batch tag --ids 1,2 --tags go,docs
-rdrop batch move --ids 1,2 --to 98765
-rdrop batch delete --ids 1,2 --dry-run
-rdrop export --format csv|html|zip > bookmarks.csv
-rdrop import file bookmarks.html
-rdrop highlights [--collection id]
-rdrop backups
-rdrop backup download <backup-id> --format csv > backup.csv
-rdrop raw GET user/stats
 ```
 
-For endpoint coverage, see [docs/API_COVERAGE.md](docs/API_COVERAGE.md). For cleanup guidance, see [docs/ORGANIZING.md](docs/ORGANIZING.md). For packaging notes, see [docs/PACKAGING.md](docs/PACKAGING.md). For future ideas with no expected timing, see [docs/ROADMAP.md](docs/ROADMAP.md).
+## Shell workflows
 
-## Output Contract
-
-Human-readable list output is tab-separated and intentionally compact:
-
-```bash
-rdrop search "postgres" | cut -f1,3
-rdrop tags | sort -k2 -nr | head
+```sh
+rdrop collections --tree
+rdrop search 'type:article #go' --json | jq '.items[].link'
+rdrop tags --json
+rdrop export --format csv > bookmarks.csv
+rdrop help collection
+rdrop completion zsh > _rdrop
 ```
 
-Structured output is pretty-printed JSON:
+Lists use tab-separated rows by default. `--json` preserves metadata; exports, backups and cached copies write bytes to stdout. Pages are zero-based, with at most 50 items per page. Collection `0` reads all saved items except Trash, `-1` is Unsorted and `-99` is Trash. Bulk bookmark writes require an explicit source collection.
 
-```bash
-rdrop collections --json
-rdrop cleanup report --json
+## Review and organize
+
+Start with a report. Select exact bookmarks before planning changes:
+
+```sh
+rdrop cleanup report --json > cleanup-report.json
+rdrop context --ids 101,102 > library-context.json
+jq 'del(.snapshots)' library-context.json > model-context.json
 ```
 
-Commands that export file formats write bytes directly to stdout:
+The model view contains existing tag names and counts, collection paths and bookmark metadata. The original context also retains private snapshots for stale checks. Give any model or rule engine the model view and ask it for the [proposal format](docs/ORGANIZING.md#provider-neutral-proposals).
 
-```bash
-rdrop export --format html > raindrop.html
-rdrop backup download 659d42a35ffbb2eb5ae1cb86 --format csv > backup.csv
+```sh
+rdrop organize plan --context library-context.json --proposal proposal.json > organization.json
+jq '.plan // error("No accepted changes")' organization.json > reviewed-plan.json
+# Inspect organization.json, including needsReview and unmentioned entries.
+rdrop cleanup apply reviewed-plan.json --dry-run
+rdrop cleanup apply reviewed-plan.json --yes
 ```
 
-## Safety Model
+Plans append tags without dropping existing names and can combine tags and a move in one bookmark update. Unknown IDs, tags and destinations fail validation. New tags need explicit policy rules. Account, digest and every selected bookmark are checked before the first write. Raindrop has no transaction here: concurrent edits and partial failures require inspection and a fresh plan. [Organizing guide](docs/ORGANIZING.md).
 
-`rdrop` keeps destructive operations explicit:
+For a manual bulk plan:
 
-- `cleanup report` never mutates your library.
-- Bulk tag and move require explicit `--ids`.
-- Bulk delete requires either `--dry-run` or `--yes`.
-- Emptying Trash requires `--yes`.
-- Exports and backups write to stdout so you choose where bytes go.
-
-Prefer this sequence for large organizing work:
-
-```bash
-rdrop cleanup report --json
-rdrop untagged --json
-rdrop batch tag --ids 1,2,3 --tags needs-review
-rdrop cleanup report --json
+```sh
+rdrop cleanup plan --action tag --collection=-1 --ids 101,102 --tags reference > reviewed-plan.json
 ```
 
-## Development
+## Connect an agent through MCP
 
-```bash
-git clone https://github.com/KingPsychopath/raindrop-cli.git
-cd raindrop-cli
-make check
+```sh
+rdrop connect mcp                 # print client configuration
+rdrop mcp serve                   # stdio; read-only
+rdrop mcp tools                   # offline JSON tool catalog
+rdrop connect acp --cwd "$PWD"    # session/new params for an existing ACP agent
 ```
 
-Useful targets:
+Configure the generated command in your MCP client. Tokens stay in the environment or private config file. The server includes an organizing prompt, guide resource, structured tools and bounded context/proposal planning. Add `--allow-write` only when the host is authorized to expose mutations. `confirm:true` expresses caller intent; the host must enforce human review where required.
 
-```text
-make build    build ./bin/rdrop
-make test     run tests
-make vet      run go vet
-make check    format, tidy, vet, test, and build
-make assets   regenerate README/demo assets
-make clean    remove build artifacts
+ACP support means supplying this MCP server to an existing ACP agent. `rdrop` does not implement an ACP agent server. HTTP configurations for Raindrop's official MCP and Executor are available through `connect raindrop` and `connect executor`. The [Executor adapter](integrations/executor) provides portable REST tools and exact-call approval for its writes. [Integration guide](docs/INTEGRATIONS.md).
+
+## Run a model directly
+
+```sh
+# Set RDROP_MODEL_API_KEY in your secret environment first.
+rdrop agent --model your-tool-capable-model --json \
+  'Review the first page of untagged bookmarks. Use existing tags and propose a plan.' > agent-result.json
+jq '.plans[0] // error("No plan generated")' agent-result.json > reviewed-plan.json
 ```
 
-The project intentionally prefers the Go standard library. Add dependencies only when they clearly improve maintainability.
+This is a complete request → tool call → tool result → model response loop. It starts with the cleanup report and a bounded context, executes validated tools, returns results to the model, and stops at configured step, call and time limits. Read-only is the default; actual tool results and exact generated plans are captured separately from model prose. Explicit `--allow-write` authorizes model-selected mutations.
 
-The terminal demo image is generated from [scripts/render-terminal-demo.go](scripts/render-terminal-demo.go):
+Responses API is the default. For a compatible local or hosted Chat Completions server:
 
-```bash
-make assets
+```sh
+rdrop agent --base-url http://127.0.0.1:1234/v1 --api chat --model local-model \
+  'Inspect my existing tags and propose organization.' --json
 ```
 
-## Releases
+The model must actually support tool calls. Local loopback endpoints can run without an API key. [Model configuration and limits](docs/MODELS.md).
 
-Releases are created by pushing a semantic version tag:
+## Optional typed decisions
 
-```bash
-git tag v0.1.0
-git push origin v0.1.0
+```sh
+# taxonomy.json: {"reference":"Technical documentation", "read-later":"Long-form reading"}
+rdrop classify --ids 101,102 --taxonomy taxonomy.json --json
+
+# Local laya-serve: separately install and start the upstream service.
+RDROP_DECISION_BASE_URL=http://127.0.0.1:8000/v1 \
+RDROP_DECISION_MODEL=english \
+rdrop classify --ids 101,102 --taxonomy taxonomy.json --json
 ```
 
-GitHub Actions builds release archives for:
+Default HTTP provider: TypeSafe Jev, configured with `TYPESAFE_API_KEY`. Local commands use the same typed decision contract. Classification validates chosen labels and distributions and marks low-confidence or abstained results for review; it does not apply tags. Provider confidence scores need evaluation on your own taxonomy. Multi-tag and move proposals use the provider-neutral context contract above. [Jev, Laya and command adapters](docs/MODELS.md#typed-decision-providers).
 
-- macOS amd64 and arm64, using Go's `darwin` build target
-- Linux amd64 and arm64
-- Windows amd64 and arm64
+## Reference and development
 
-Each release includes `checksums.txt`.
+- [All commands and flags](docs/COMMANDS.md), generated by `rdrop help --markdown`.
+- [REST and MCP coverage](docs/API_COVERAGE.md).
+- [Contributing](CONTRIBUTING.md), [security boundaries](SECURITY.md), [roadmap](docs/ROADMAP.md), [changelog](CHANGELOG.md).
 
-The release workflow cross-compiles from GitHub Actions. That is a normal fit for a small Go CLI. The macOS binaries are not currently signed or notarized.
+```sh
+make check             # formatting, modules, vet, focused/full tests, build, docs parity
+make check-integrations # npm launcher, Executor framework and Laya adapter contracts
+```
 
-Release builds inject version metadata so `rdrop version` reports the release version, commit, and build date.
-
-## License
-
-MIT. See [LICENSE](LICENSE).
+MCP uses the official Go SDK. The REST client, model clients and planning code use the standard library. Integration checks use fixtures; they do not prove live model accuracy, hosted Executor deployment or a published npm release.

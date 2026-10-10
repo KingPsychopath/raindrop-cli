@@ -36,9 +36,13 @@ func cleanupReport(collectionID int64, search string, filters raindrop.Filters) 
 			"untagged":   filters.NoTag.Count,
 		},
 		TopTags:  topTags(filters.Tags, 20),
+		TagPlans: []cleanupTagPlan{},
 		Commands: cleanupCommands(collectionID, search),
 	}
-	report.TagPlans = tagNormalizationPlans(collectionID, filters.Tags)
+	// Tag renames operate on an entire collection, never a search subset.
+	if search == "" {
+		report.TagPlans = tagNormalizationPlans(collectionID, filters.Tags)
+	}
 	return report
 }
 
@@ -48,7 +52,7 @@ func cleanupCommands(collectionID int64, search string) map[string]string {
 		base = fmt.Sprintf("--collection %d ", collectionID)
 	}
 	if search != "" {
-		base += fmt.Sprintf("--search %q ", search)
+		base += "--search " + shellQuote(search) + " "
 	}
 	return map[string]string{
 		"broken":     strings.TrimSpace("rdrop broken " + base + "--json"),

@@ -11,3 +11,14 @@
 *.html
 *.jsonl
 *.log
+
+node_modules/
+__pycache__/
+.venv/
+*-plan.json
+cleanup-report.json
+library-context.json
+model-context.json
+proposal.json
+agent-result.json
+organization.json
