@@ -95,20 +95,9 @@ func toolCatalog() []toolSpec {
 		if action == "move" {
 			params = append(params, num("to", "to", true))
 		}
-		for _, preview := range []bool{true} {
-			command := "batch " + action
-			prefix := []string{}
-			if preview {
-				command += " preview"
-				prefix = append(prefix, "--dry-run")
-			}
-			if action == "delete" && !preview {
-				prefix = append(prefix, "--yes")
-			}
-			entry := spec(command, "Create a read-only snapshot plan for explicit IDs in a source collection. Save and review the exact plan before cleanup apply.", !preview, !preview, preview && action == "delete", params...)
-			entry.Prefix = prefix
-			catalog = append(catalog, entry)
-		}
+		entry := spec("batch "+action+" preview", "Create a read-only snapshot plan for explicit IDs in a source collection. Save and review the exact plan before cleanup apply.", false, false, action == "delete", params...)
+		entry.Prefix = []string{"--dry-run"}
+		catalog = append(catalog, entry)
 	}
 	return catalog
 }

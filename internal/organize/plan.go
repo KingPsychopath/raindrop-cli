@@ -133,7 +133,7 @@ func (p Plan) validate() error {
 			return fmt.Errorf("delete plan cannot include tags or a destination")
 		}
 	default:
-		return fmt.Errorf("plan action must be tag, move, or delete")
+		return fmt.Errorf("plan action must be tag, move, delete, or organize")
 	}
 	if p.Action != "organize" && len(p.Changes) != 0 {
 		return fmt.Errorf("changes require an organize plan")
@@ -195,20 +195,7 @@ func Apply(ctx context.Context, api *raindrop.Client, plan Plan, yes bool) (Resu
 			}
 			_, err = api.Update(ctx, item.ID, body)
 		case "tag":
-			tags := append([]string{}, item.Tags...)
-			for _, tag := range plan.Tags {
-				found := false
-				for _, existing := range tags {
-					if existing == tag {
-						found = true
-						break
-					}
-				}
-				if !found {
-					tags = append(tags, tag)
-				}
-			}
-			_, err = api.Update(ctx, item.ID, map[string]any{"tags": tags})
+			_, err = api.Update(ctx, item.ID, map[string]any{"tags": appendTags(item.Tags, plan.Tags)})
 		case "move":
 			_, err = api.Update(ctx, item.ID, map[string]any{"collection": raindrop.Ref{ID: plan.To}})
 		case "delete":
