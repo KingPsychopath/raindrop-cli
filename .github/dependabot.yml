@@ -26,7 +26,6 @@ updates:
     # is unrelated; update this dependency manually against the target host.
     ignore:
       - dependency-name: "apps"
-        versions: ["*"]
     schedule:
       interval: "weekly"
     labels: ["dependencies"]
