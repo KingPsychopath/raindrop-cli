@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/KingPsychopath/raindrop-cli/internal/raindrop"
+	"github.com/machineyearningengineer/raindrop-cli/internal/raindrop"
 )
 
 func TestCreationPlanReviewAccountAndExactPayload(t *testing.T) {

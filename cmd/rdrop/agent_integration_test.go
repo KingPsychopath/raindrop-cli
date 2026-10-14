@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/KingPsychopath/raindrop-cli/internal/organize"
-	"github.com/KingPsychopath/raindrop-cli/internal/raindrop"
+	"github.com/machineyearningengineer/raindrop-cli/internal/organize"
+	"github.com/machineyearningengineer/raindrop-cli/internal/raindrop"
 )
 
 func TestDirectAgentUsesContextAndCapturesExactValidatedPlan(t *testing.T) {

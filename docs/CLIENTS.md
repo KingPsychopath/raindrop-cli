@@ -11,7 +11,7 @@ The shared package in [integrations/agent-plugin](../integrations/agent-plugin) 
 For Codex:
 
 ```sh
-codex plugin marketplace add KingPsychopath/raindrop-cli --ref v0.2.1
+codex plugin marketplace add machineyearningengineer/raindrop-cli --ref v0.2.1
 codex plugin add raindrop@machineyearn
 ```
 
@@ -20,7 +20,7 @@ Supported desktop versions also expose this marketplace in their plugin director
 For Claude Code, run these inside Claude:
 
 ```text
-/plugin marketplace add KingPsychopath/raindrop-cli
+/plugin marketplace add machineyearningengineer/raindrop-cli
 /plugin install raindrop@machineyearn
 ```
 
@@ -30,7 +30,7 @@ The MCP command is pinned to `@machineyearn/raindrop-cli@0.2.1`. Updating the pl
 
 ## Direct stdio configuration
 
-The MCP Registry entry is [`io.github.KingPsychopath/raindrop-cli`](https://registry.modelcontextprotocol.io/?q=io.github.KingPsychopath%2Fraindrop-cli), displayed as **rdrop for Raindrop.io**. It describes the pinned npm command, `mcp serve` arguments and private token setup. Registry discovery is separate from a client's plugin directory and does not provision an account or enable writes. [Registry metadata and publishing](PACKAGING.md#mcp-registry).
+The source metadata uses `io.github.machineyearningengineer/raindrop-cli` for the next MCP Registry publication, displayed as **rdrop for Raindrop.io**. The published v0.2.1 listing remains [`io.github.KingPsychopath/raindrop-cli`](https://registry.modelcontextprotocol.io/?q=io.github.KingPsychopath%2Fraindrop-cli); changing GitHub usernames does not republish that listing or the npm package. It describes the pinned npm command, `mcp serve` arguments and private token setup. Registry discovery is separate from a client's plugin directory and does not provision an account or enable writes. [Registry metadata and publishing](PACKAGING.md#mcp-registry).
 
 For clients using `mcpServers`, including Claude Desktop and Cursor, add:
 

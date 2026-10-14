@@ -8,7 +8,7 @@ export function releaseReadme(version) {
   return markdown.replace(/\]\(([^\s)]+)\)/g, (match, target, offset) => {
     if (/^(?:[a-z][a-z0-9+.-]*:|#|\/)/i.test(target)) return match;
     const image = /!\[[^\]]*$/.test(markdown.slice(0, offset));
-    const base = image ? `https://raw.githubusercontent.com/KingPsychopath/raindrop-cli/v${version}/` : `https://github.com/KingPsychopath/raindrop-cli/blob/v${version}/`;
+    const base = image ? `https://raw.githubusercontent.com/machineyearningengineer/raindrop-cli/v${version}/` : `https://github.com/machineyearningengineer/raindrop-cli/blob/v${version}/`;
     return `](${base}${target})`;
   });
 }

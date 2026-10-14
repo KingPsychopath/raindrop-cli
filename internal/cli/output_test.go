@@ -3,7 +3,7 @@ package cli
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/KingPsychopath/raindrop-cli/internal/raindrop"
+	"github.com/machineyearningengineer/raindrop-cli/internal/raindrop"
 	"strings"
 	"testing"
 )

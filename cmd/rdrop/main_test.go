@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/KingPsychopath/raindrop-cli/internal/raindrop"
+	"github.com/machineyearningengineer/raindrop-cli/internal/raindrop"
 )
 
 func TestParseFlagsAllowsFlagsAfterPositionals(t *testing.T) {

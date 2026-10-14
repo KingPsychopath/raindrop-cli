@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/KingPsychopath/raindrop-cli/internal/raindrop"
+	"github.com/machineyearningengineer/raindrop-cli/internal/raindrop"
 )
 
 func TestJevTypedClassificationAndReviewThreshold(t *testing.T) {

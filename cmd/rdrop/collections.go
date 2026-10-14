@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/KingPsychopath/raindrop-cli/internal/cli"
+	"github.com/machineyearningengineer/raindrop-cli/internal/cli"
 )
 
 func (a *app) collections(ctx context.Context, args []string) error {

@@ -10,7 +10,7 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/KingPsychopath/raindrop-cli/internal/raindrop"
+	"github.com/machineyearningengineer/raindrop-cli/internal/raindrop"
 )
 
 type Plan struct {

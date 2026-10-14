@@ -1,10 +1,10 @@
 class Rdrop < Formula
   desc "Find and organize Raindrop.io bookmarks with reviewed plans"
-  homepage "https://github.com/KingPsychopath/raindrop-cli"
-  url "https://github.com/KingPsychopath/raindrop-cli/archive/refs/tags/v0.2.1.tar.gz"
+  homepage "https://github.com/machineyearningengineer/raindrop-cli"
+  url "https://github.com/machineyearningengineer/raindrop-cli/archive/refs/tags/v0.2.1.tar.gz"
   sha256 "dff61f02b2750565fc7b0092bbb1e6c58e142b51f6793574fbefe3e881d09fee"
   license "MIT"
-  head "https://github.com/KingPsychopath/raindrop-cli.git", branch: "main"
+  head "https://github.com/machineyearningengineer/raindrop-cli.git", branch: "main"
 
   depends_on "go" => :build
 

@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/KingPsychopath/raindrop-cli/internal/config"
+	"github.com/machineyearningengineer/raindrop-cli/internal/config"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 

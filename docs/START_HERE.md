@@ -7,7 +7,7 @@ Install `rdrop`, connect your Raindrop account, then use your shell or agent. An
 Choose one:
 
 ```sh
-brew install KingPsychopath/tap/rdrop
+brew install machineyearningengineer/tap/rdrop
 # Or Node 22+, with optional dependencies enabled:
 npm install --global @machineyearn/raindrop-cli@0.2.1
 rdrop version

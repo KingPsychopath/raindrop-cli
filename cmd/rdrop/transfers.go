@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/KingPsychopath/raindrop-cli/internal/cli"
+	"github.com/machineyearningengineer/raindrop-cli/internal/cli"
 	"net/url"
 	"strings"
 )

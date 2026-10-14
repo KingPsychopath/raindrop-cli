@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/KingPsychopath/raindrop-cli/internal/config"
-	"github.com/KingPsychopath/raindrop-cli/internal/organize"
-	"github.com/KingPsychopath/raindrop-cli/internal/raindrop"
 	"github.com/google/jsonschema-go/jsonschema"
+	"github.com/machineyearningengineer/raindrop-cli/internal/config"
+	"github.com/machineyearningengineer/raindrop-cli/internal/organize"
+	"github.com/machineyearningengineer/raindrop-cli/internal/raindrop"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 

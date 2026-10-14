@@ -4,8 +4,8 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/KingPsychopath/raindrop-cli/internal/cli"
-	"github.com/KingPsychopath/raindrop-cli/internal/raindrop"
+	"github.com/machineyearningengineer/raindrop-cli/internal/cli"
+	"github.com/machineyearningengineer/raindrop-cli/internal/raindrop"
 	"strings"
 )
 

@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/KingPsychopath/raindrop-cli/internal/cli"
-	"github.com/KingPsychopath/raindrop-cli/internal/config"
+	"github.com/machineyearningengineer/raindrop-cli/internal/cli"
+	"github.com/machineyearningengineer/raindrop-cli/internal/config"
 )
 
 func (a *app) config(args []string) error {

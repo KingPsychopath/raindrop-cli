@@ -7,7 +7,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/KingPsychopath/raindrop-cli/internal/raindrop"
+	"github.com/machineyearningengineer/raindrop-cli/internal/raindrop"
 )
 
 func PrintJSON(w io.Writer, value any) error {

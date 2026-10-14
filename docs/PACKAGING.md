@@ -12,13 +12,13 @@ make install
 
 The Go version is declared in `go.mod`; CI uses that file. The release workflow builds macOS, Linux and Windows binaries for amd64 and arm64, with `CGO_ENABLED=0`, trimpath and version/commit/date metadata. GitHub release archives include README and license; packaged README links and graphics point to the matching Git tag. `checksums.txt` covers downloadable archives, npm tarballs and the agent-plugin ZIP. Build timestamps mean that separate invocations are not promised to be byte-for-byte reproducible.
 
-For a released archive, download it and the matching `checksums.txt` from the same [GitHub release](https://github.com/KingPsychopath/raindrop-cli/releases). On Linux run `sha256sum --check checksums.txt --ignore-missing`; on macOS compare `shasum -a 256 YOUR_ARCHIVE` to that archive's entry before extracting it. Do not reuse another release's checksums.
+For a released archive, download it and the matching `checksums.txt` from the same [GitHub release](https://github.com/machineyearningengineer/raindrop-cli/releases). On Linux run `sha256sum --check checksums.txt --ignore-missing`; on macOS compare `shasum -a 256 YOUR_ARCHIVE` to that archive's entry before extracting it. Do not reuse another release's checksums.
 
-The [published Homebrew formula](https://github.com/KingPsychopath/homebrew-tap/blob/main/Formula/rdrop.rb), mirrored in [packaging/homebrew/rdrop.rb](../packaging/homebrew/rdrop.rb), uses a tagged source archive and its verified SHA-256 checksum. The `head` option tracks main. Update the source URL and checksum together after each release tag exists; source archive checksums differ from native release archive checksums.
+The [published Homebrew formula](https://github.com/machineyearningengineer/homebrew-tap/blob/main/Formula/rdrop.rb), mirrored in [packaging/homebrew/rdrop.rb](../packaging/homebrew/rdrop.rb), uses a tagged source archive and its verified SHA-256 checksum. The `head` option tracks main. Update the source URL and checksum together after each release tag exists; source archive checksums differ from native release archive checksums.
 
 ## npm packages
 
-v0.2.1 is distributed as [@machineyearn/raindrop-cli](https://www.npmjs.com/package/@machineyearn/raindrop-cli) and six native platform packages. Publish the exact [GitHub release](https://github.com/KingPsychopath/raindrop-cli/releases/tag/v0.2.1) tarballs and verify every registry SHA-512 against those bytes with `scripts/verify-npm-release.mjs`. Homebrew and native archives provide alternative install routes.
+v0.2.1 is distributed as [@machineyearn/raindrop-cli](https://www.npmjs.com/package/@machineyearn/raindrop-cli) and six native platform packages. Publish the exact [GitHub release](https://github.com/machineyearningengineer/raindrop-cli/releases/tag/v0.2.1) tarballs and verify every registry SHA-512 against those bytes with `scripts/verify-npm-release.mjs`. Homebrew and native archives provide alternative install routes.
 
 ```sh
 node --test packaging/npm/launcher.test.cjs
@@ -59,15 +59,22 @@ The visible product name is **rdrop for Raindrop.io**, maintained independently 
 
 ## MCP Registry
 
-[server.json](../server.json) describes `io.github.KingPsychopath/raindrop-cli`, with the public title **rdrop for Raindrop.io**, npm package `@machineyearn/raindrop-cli`, local stdio transport and arguments `mcp serve`. The npm launcher's `mcpName` binds that package to the registry identity. The token environment variable is secret and optional because the CLI also supports private env/token files. Node 22+ and optional native dependencies are required. The listing starts the read-only server and does not provide a hosted endpoint or install a client plugin.
+### GitHub username change — 14 October 2026
+
+Current source and future release metadata use `machineyearningengineer`, including the Go module path, GitHub URLs, Homebrew tap and MCP identity `io.github.machineyearningengineer/raindrop-cli`. The npm scope stays `@machineyearn`. GitHub-based registry authentication grants the current username's namespace; see the [official authentication guidance](https://github.com/modelcontextprotocol/registry/blob/main/docs/modelcontextprotocol-io/authentication.mdx).
+
+Published v0.2.1 npm tarballs and the existing `io.github.KingPsychopath/raindrop-cli` registry record retain their original metadata. This source change does not publish packages, replace release assets or migrate/deprecate that record. The next publication must use a new npm version, matching `mcpName`, `server.json` identity and version, and freshly verified artifacts. To verify immutable v0.2.1 artifacts, use its tagged source and verifier rather than the updated verifier on main. The historical [verification record](VERIFICATION.md) keeps the identity that was actually published.
+
+[server.json](../server.json) describes `io.github.machineyearningengineer/raindrop-cli`, with the public title **rdrop for Raindrop.io**, npm package `@machineyearn/raindrop-cli`, local stdio transport and arguments `mcp serve`. The npm launcher's `mcpName` binds that package to the registry identity. The token environment variable is secret and optional because the CLI also supports private env/token files. Node 22+ and optional native dependencies are required. The listing starts the read-only server and does not provide a hosted endpoint or install a client plugin.
 
 After publishing all seven exact npm release tarballs:
 
 ```sh
-node scripts/verify-npm-release.mjs 0.2.1 dist
-gh workflow run publish-mcp.yml --ref main -f version=0.2.1
+version=X.Y.Z # the newly published version, after updating source metadata
+node scripts/verify-npm-release.mjs "$version" dist
+gh workflow run publish-mcp.yml --ref main -f version="$version"
 gh run list --workflow publish-mcp.yml --limit 1
-curl --fail 'https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.KingPsychopath/raindrop-cli'
+curl --fail 'https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.machineyearningengineer/raindrop-cli'
 ```
 
 The manually dispatched workflow checks out the requested release tag, verifies GitHub checksums and npm SHA-512 for all seven packages, verifies matching registry identity/version, then publishes with GitHub OIDC. The publisher archive is pinned by version and SHA-256. Authentication is short-lived and needs no registry secret. A missing npm version or integrity mismatch stops publication. See the [official registry publishing guide](https://modelcontextprotocol.io/registry/quickstart) and [GitHub Actions authentication](https://modelcontextprotocol.io/registry/github-actions). The registry is currently in preview; downstream directories control their own indexing and review.

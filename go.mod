@@ -1,4 +1,4 @@
-module github.com/KingPsychopath/raindrop-cli
+module github.com/machineyearningengineer/raindrop-cli
 
 go 1.26.5
 

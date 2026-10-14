@@ -10,9 +10,9 @@ import (
 	"os"
 	"sync"
 
-	"github.com/KingPsychopath/raindrop-cli/internal/cli"
-	"github.com/KingPsychopath/raindrop-cli/internal/organize"
-	"github.com/KingPsychopath/raindrop-cli/internal/raindrop"
+	"github.com/machineyearningengineer/raindrop-cli/internal/cli"
+	"github.com/machineyearningengineer/raindrop-cli/internal/organize"
+	"github.com/machineyearningengineer/raindrop-cli/internal/raindrop"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 

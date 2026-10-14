@@ -4,12 +4,12 @@
   "private": true,
   "description": "rdrop for Raindrop.io: find and organize bookmarks with a CLI, MCP server and reviewed plans",
   "keywords": ["rdrop", "raindrop", "raindrop-io", "bookmarks", "bookmark-manager", "organization", "tagging", "cli", "mcp", "mcp-server", "model-context-protocol", "ai-agents", "claude-code", "codex", "local-ai"],
-  "mcpName": "io.github.KingPsychopath/raindrop-cli",
-  "homepage": "https://github.com/KingPsychopath/raindrop-cli#readme",
-  "bugs": { "url": "https://github.com/KingPsychopath/raindrop-cli/issues" },
+  "mcpName": "io.github.machineyearningengineer/raindrop-cli",
+  "homepage": "https://github.com/machineyearningengineer/raindrop-cli#readme",
+  "bugs": { "url": "https://github.com/machineyearningengineer/raindrop-cli/issues" },
   "license": "MIT",
   "bin": { "rdrop": "launcher.cjs" },
   "engines": { "node": ">=22" },
-  "repository": { "type": "git", "url": "git+https://github.com/KingPsychopath/raindrop-cli.git" },
+  "repository": { "type": "git", "url": "git+https://github.com/machineyearningengineer/raindrop-cli.git" },
   "files": ["launcher.cjs", "README.md", "LICENSE"]
 }

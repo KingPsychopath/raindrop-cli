@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/KingPsychopath/raindrop-cli/internal/raindrop"
+	"github.com/machineyearningengineer/raindrop-cli/internal/raindrop"
 )
 
 func TestPlanReviewAndRecovery(t *testing.T) {

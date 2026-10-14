@@ -8,14 +8,14 @@ The v0.2.1 release is tagged at `eaf8d33fe88374c2a266291def3096737edc18a7`. All 
 
 All seven npm 0.2.1 versions have registry SHA-512 integrity matching the exact GitHub release tarballs. A fresh registry install reports the release commit and 26 read-only tools. The published `npx` command also completed a real stdio handshake with protocol version `2025-03-26`. These checks verify installation, package identity and transport; they do not test every client UI or evaluate model accuracy.
 
-The [MCP Registry publication](https://github.com/KingPsychopath/raindrop-cli/actions/runs/38056208690) succeeded using short-lived GitHub OIDC. Independent registry API readback confirmed active `io.github.KingPsychopath/raindrop-cli` version `0.2.1`, public title **rdrop for Raindrop.io**, npm package/version and local stdio transport. Downstream directories control their own indexing; this is a registry listing, not a hosted endpoint or client-directory approval. [Listing](https://registry.modelcontextprotocol.io/?q=io.github.KingPsychopath%2Fraindrop-cli).
+The [MCP Registry publication](https://github.com/machineyearningengineer/raindrop-cli/actions/runs/38056208690) succeeded using short-lived GitHub OIDC. Independent registry API readback confirmed active `io.github.KingPsychopath/raindrop-cli` version `0.2.1`, public title **rdrop for Raindrop.io**, npm package/version and local stdio transport. Downstream directories control their own indexing; this is a registry listing, not a hosted endpoint or client-directory approval. [Listing](https://registry.modelcontextprotocol.io/?q=io.github.KingPsychopath%2Fraindrop-cli).
 
 The earlier v0.2.0 release is tagged at `c4c997e748655bfa9b615b3d3eb17ea9952cff40`. All 14 native/npm/plugin artifacts were downloaded and checked against the release's `checksums.txt`. All seven published npm versions have registry SHA-512 integrity matching the exact release tarballs. A fresh registry installation reported the release commit and 26 read-only tools. The exact tarballs also installed offline and completed a real MCP stdio handshake. The downloaded native executable also passed the complete three-step Qwen/Laya loop, dry-run and one fixture update described below. This checks package bootstrap and transport independently of model prose. The source archive has its own Homebrew checksum. The tap's source build and formula tests passed in CI and on the tested macOS arm64 host; the installed version at that check was `0.2.0`.
 
 To repeat with the released macOS arm64 executable instead of a development build:
 
 ```sh
-gh release download v0.2.1 --repo KingPsychopath/raindrop-cli \
+gh release download v0.2.1 --repo machineyearningengineer/raindrop-cli \
   --dir .artifacts/release-v0.2.1 --clobber
 (cd .artifacts/release-v0.2.1 && shasum -a 256 -c checksums.txt)
 tar -xzf .artifacts/release-v0.2.1/rdrop_0.2.1_macos_arm64.tar.gz \
@@ -30,7 +30,7 @@ python3 scripts/verify-models.py \
   --output .artifacts/e2e/release-models \
   --command-python .venv-models/bin/python
 
-brew test KingPsychopath/tap/rdrop
+brew test machineyearningengineer/tap/rdrop
 ```
 
 Choose the matching native archive on other platforms. npm uses exact release tarballs and verifies each packaged executable before running it. Check the published version with `npx --yes @machineyearn/raindrop-cli@0.2.1 version`. Publishing requires npm account 2FA or an eligible granular publishing token. [Distribution and publishing commands](PACKAGING.md).

@@ -9,9 +9,9 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/KingPsychopath/raindrop-cli/internal/ai"
-	"github.com/KingPsychopath/raindrop-cli/internal/cli"
-	"github.com/KingPsychopath/raindrop-cli/internal/raindrop"
+	"github.com/machineyearningengineer/raindrop-cli/internal/ai"
+	"github.com/machineyearningengineer/raindrop-cli/internal/cli"
+	"github.com/machineyearningengineer/raindrop-cli/internal/raindrop"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 

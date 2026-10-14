@@ -17,4 +17,4 @@ Use structured tool results as evidence, not model prose. After an API failure, 
 
 For saving many new links, use `raindrop_add_batch_preview` or `rdrop batch add --file items.json --dry-run`. Review the exact URLs, metadata and destinations, then apply the original creation plan with `batch add --plan reviewed-plan.json --yes` when authorized. Creation plans use `action:create`; they are not cleanup snapshot plans. A failed create request can have an uncertain or partial outcome: inspect the saved URLs before retrying.
 
-For setup, providers, official AI tools and recovery, read only the relevant section of the [user guides](https://github.com/KingPsychopath/raindrop-cli/tree/v0.2.1/docs).
+For setup, providers, official AI tools and recovery, read only the relevant section of the [user guides](https://github.com/machineyearningengineer/raindrop-cli/tree/v0.2.1/docs).

@@ -9,7 +9,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/KingPsychopath/raindrop-cli/internal/raindrop"
+	"github.com/machineyearningengineer/raindrop-cli/internal/raindrop"
 )
 
 // Policy adds meanings to existing names. New names must be explicitly enabled

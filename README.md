@@ -2,12 +2,12 @@
 
 **Find, review and organize your saved links. Keep your tags. Bring your own AI.**
 
-[![CI](https://github.com/KingPsychopath/raindrop-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/KingPsychopath/raindrop-cli/actions/workflows/ci.yml)
-[![Release](https://github.com/KingPsychopath/raindrop-cli/actions/workflows/release.yml/badge.svg)](https://github.com/KingPsychopath/raindrop-cli/actions/workflows/release.yml)
-[![Version](https://img.shields.io/github/v/release/KingPsychopath/raindrop-cli)](https://github.com/KingPsychopath/raindrop-cli/releases/latest)
+[![CI](https://github.com/machineyearningengineer/raindrop-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/machineyearningengineer/raindrop-cli/actions/workflows/ci.yml)
+[![Release](https://github.com/machineyearningengineer/raindrop-cli/actions/workflows/release.yml/badge.svg)](https://github.com/machineyearningengineer/raindrop-cli/actions/workflows/release.yml)
+[![Version](https://img.shields.io/github/v/release/machineyearningengineer/raindrop-cli)](https://github.com/machineyearningengineer/raindrop-cli/releases/latest)
 [![npm](https://img.shields.io/npm/v/%40machineyearn%2Fraindrop-cli?label=npm)](https://www.npmjs.com/package/@machineyearn/raindrop-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Go version](https://img.shields.io/github/go-mod/go-version/KingPsychopath/raindrop-cli)](go.mod)
+[![Go version](https://img.shields.io/github/go-mod/go-version/machineyearningengineer/raindrop-cli)](go.mod)
 
 Turn a growing [Raindrop.io](https://raindrop.io) library into something easier to use. Search saved links, inspect collections, find cleanup opportunities and review suggestions before making changes. Use it from your terminal or let your favorite agent do the reading and planning.
 
@@ -25,13 +25,13 @@ A Raindrop.io CLI, MCP server and reviewed bookmark organizer from **Machineyear
 ### 1. Install
 
 ```sh
-brew install KingPsychopath/tap/rdrop
+brew install machineyearningengineer/tap/rdrop
 # Or Node 22+, with optional dependencies enabled:
 npm install --global @machineyearn/raindrop-cli@0.2.1
 rdrop version
 ```
 
-Prefer no global install? Use `npx --yes @machineyearn/raindrop-cli@0.2.1 COMMAND`. [Native downloads](https://github.com/KingPsychopath/raindrop-cli/releases/latest) cover macOS, Linux and Windows on Intel/AMD and ARM. [Builds and checksums](docs/PACKAGING.md).
+Prefer no global install? Use `npx --yes @machineyearn/raindrop-cli@0.2.1 COMMAND`. [Native downloads](https://github.com/machineyearningengineer/raindrop-cli/releases/latest) cover macOS, Linux and Windows on Intel/AMD and ARM. [Builds and checksums](docs/PACKAGING.md).
 
 ### 2. Connect Raindrop
 
@@ -48,7 +48,7 @@ Give the directory permissions `700` and the file `600`, then run `rdrop doctor`
 Copy this into Codex, Claude or your preferred coding agent. It can help with setup too:
 
 ```text
-Set up https://github.com/KingPsychopath/raindrop-cli so you can help
+Set up https://github.com/machineyearningengineer/raindrop-cli so you can help
 manage my Raindrop library. Use its plugin/MCP when available, otherwise
 use the CLI. Check installation and authentication; have me add the token
 privately. Use the existing model and configured services first.

@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/KingPsychopath/raindrop-cli/internal/config"
+	"github.com/machineyearningengineer/raindrop-cli/internal/config"
 )
 
 type Client struct {

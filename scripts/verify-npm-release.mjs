@@ -8,7 +8,7 @@ const [version, directory = 'dist'] = process.argv.slice(2);
 if (!/^\d+\.\d+\.\d+$/.test(version ?? '')) throw new Error('Usage: node scripts/verify-npm-release.mjs <version> [release-directory]');
 const root = path.resolve(directory);
 const server = JSON.parse(fs.readFileSync('server.json', 'utf8'));
-const expectedName = 'io.github.KingPsychopath/raindrop-cli';
+const expectedName = 'io.github.machineyearningengineer/raindrop-cli';
 if (server.name !== expectedName || server.version !== version) throw new Error('Registry identity/version differs from this release');
 const registryPackage = server.packages?.[0];
 if (server.packages.length !== 1 || registryPackage.identifier !== '@machineyearn/raindrop-cli' || registryPackage.version !== version || registryPackage.transport.type !== 'stdio') throw new Error('Unexpected registry package');

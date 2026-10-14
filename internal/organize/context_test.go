@@ -3,7 +3,7 @@ package organize
 import (
 	"context"
 	"encoding/json"
-	"github.com/KingPsychopath/raindrop-cli/internal/raindrop"
+	"github.com/machineyearningengineer/raindrop-cli/internal/raindrop"
 	"net/http"
 	"net/http/httptest"
 	"strings"

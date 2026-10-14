@@ -5,8 +5,8 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/KingPsychopath/raindrop-cli/internal/cli"
-	"github.com/KingPsychopath/raindrop-cli/internal/organize"
+	"github.com/machineyearningengineer/raindrop-cli/internal/cli"
+	"github.com/machineyearningengineer/raindrop-cli/internal/organize"
 )
 
 func (a *app) printBatchPlan(ctx context.Context, action string, collection int64, ids []int64, tags []string, to int64) error {
